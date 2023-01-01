@@ -36,6 +36,7 @@ class Board():
 
     def remove_completed_lines(self):
         k = self.board_rows - 1
+        removed_lines_num = 0
         while k >= 0:
             if self.is_completed_line(k):
                 for y in range(k, 0, -1):
@@ -44,5 +45,10 @@ class Board():
                     
                 for x in range(self.board_cols):
                     self.board_value[x][0] = '.'
+
+                removed_lines_num += 1
             else:
                 k -= 1
+        return removed_lines_num
+
+            

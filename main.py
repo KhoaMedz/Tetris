@@ -1,5 +1,5 @@
 import pygame, sys, time, random, queue
-import Draw, Shapes, Piece, Board
+import Draw, Shapes, Piece, Board, Score
 from pygame.locals import *
 
 pygame.init()
@@ -28,6 +28,8 @@ COOR_TO_DRAW_BOARD_SURFACE_X = (WINDOW_WIDTH - BOARD_WIDTH) // 2
 COOR_TO_DRAW_BOARD_SURFACE_Y = (WINDOW_HEIGHT - BOARD_HEIGHT) // 2
 COOR_TO_DRAW_PIECE_QUEUE_SURFACE_X = ((WINDOW_WIDTH - BOARD_WIDTH) // 2) + BOARD_WIDTH + 20
 COOR_TO_DRAW_PIECE_QUEUE_SURFACE_Y = (WINDOW_HEIGHT - BOARD_HEIGHT) // 2
+COOR_TO_DRAW_SCORE_X = COOR_TO_DRAW_PIECE_QUEUE_SURFACE_X
+COOR_TO_DRAW_SCORE_Y = ((WINDOW_HEIGHT - BOARD_HEIGHT) // 2) + PIECE_QUEUE_HEIGHT + 20
 
 # Thiết lập màu sắc
 WHITE = (255,255,255)
@@ -49,8 +51,8 @@ def main():
     board_surface = pygame.Surface(BOARD_RES)
     piece_queue_surface = pygame.Surface(PIECE_QUEUE_RES)
     pygame.display.set_caption('Tetris')
-    rects = [pygame.Rect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE) for x in range(BOARD_COLS) for y in range(BOARD_ROWS)]
-    
+    rects_for_board_grid = [pygame.Rect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE) for x in range(BOARD_COLS) for y in range(BOARD_ROWS)]
+    rects_for_piece_queue_grid = [pygame.Rect(x * PIECE_QUEUE_BLOCK_SIZE, y * PIECE_QUEUE_BLOCK_SIZE, PIECE_QUEUE_BLOCK_SIZE, PIECE_QUEUE_BLOCK_SIZE) for x in range(PIECE_QUEUE_COLS) for y in range(PIECE_QUEUE_ROWS)]
     # Time
     last_fall_down_time = time.time()
     last_move_sideways_time = time.time()
@@ -63,7 +65,6 @@ def main():
     moving_left = False
     moving_right = False
     moving_down = False
-
     # Tạo board để lưu giá trị các block
     board = Board.Board(BOARD_COLS, BOARD_ROWS)
 
@@ -73,8 +74,10 @@ def main():
     for i in range(piece_queue.maxsize):
         piece_queue.put(Piece.Piece())
 
-    
     piece = Piece.Piece()
+
+    #Score
+    score = Score.Score()
 
     # Main loop
     while True:
@@ -141,24 +144,31 @@ def main():
         if time.time() - last_fall_down_time > fall_frequency:
             if not piece.is_valid_position(board, adjacent_Y=1):
                 board.add_to_board(piece)
-                board.remove_completed_lines()
+                removed_lines_num = board.remove_completed_lines()
+                score.calculate_score(removed_lines_num)
+                score.calculate_level()
                 piece = None
             else:
                 piece.piece['piece_y'] += 1
                 last_fall_down_time = time.time()
-        # Vẽ lên surface
+        # ---------Vẽ lên surface---------
+        # Vẽ board và piece
         board_surface.fill(BROWN)
-        [pygame.draw.rect(board_surface, GREY, i, 1) for i in rects]
+        [pygame.draw.rect(board_surface, GREY, i, 1) for i in rects_for_board_grid] #draw gird
         Draw.Draw().draw_board(board_surface, board, BLOCK_SIZE)
         if piece != None:
             Draw.Draw().draw_piece(board_surface, piece, BLOCK_SIZE)
-
+        
+        # Vẽ piece queue
         piece_queue_surface.fill(LIGHT_BROWN)
+        [pygame.draw.rect(piece_queue_surface, GREY, i, 1) for i in rects_for_piece_queue_grid]
         piece_queue_y = 1
         for element in piece_queue.queue:
             Draw.Draw().draw_piece(piece_queue_surface, element, PIECE_QUEUE_BLOCK_SIZE, True, 1, piece_queue_y)
             piece_queue_y += 5
         
+        # Vẽ score
+        score.draw_score(display_surface, COOR_TO_DRAW_SCORE_X, COOR_TO_DRAW_SCORE_Y, 50, 10, 10)
         
         display_surface.blit( board_surface, ( COOR_TO_DRAW_BOARD_SURFACE_X, COOR_TO_DRAW_BOARD_SURFACE_Y ) )
         display_surface.blit( piece_queue_surface, ( COOR_TO_DRAW_PIECE_QUEUE_SURFACE_X, COOR_TO_DRAW_PIECE_QUEUE_SURFACE_Y ) )
