@@ -57,7 +57,7 @@ def main():
     last_fall_down_time = time.time()
     last_move_sideways_time = time.time()
     last_move_down_time =time.time()
-    fall_frequency = 1
+    original_fall_frequency = 1
     move_sideways_frequency = 0.05
     move_down_frequency = 0.07
     
@@ -77,7 +77,7 @@ def main():
     piece = Piece.Piece()
 
     #Score
-    score = Score.Score()
+    score = Score.Score(original_fall_frequency)
 
     # Main loop
     while True:
@@ -141,12 +141,13 @@ def main():
             last_move_down_time = time.time()
         
         # Landed
-        if time.time() - last_fall_down_time > fall_frequency:
+        if time.time() - last_fall_down_time > score.get_fall_frequency():
             if not piece.is_valid_position(board, adjacent_Y=1):
                 board.add_to_board(piece)
                 removed_lines_num = board.remove_completed_lines()
                 score.calculate_score(removed_lines_num)
                 score.calculate_level()
+                score.calculate_fall_frequency()
                 piece = None
             else:
                 piece.piece['piece_y'] += 1
