@@ -83,12 +83,15 @@ class Tetris():
             self.moving_down = True
             self.tetromino.move('down')
             self.last_move_down_time = time.time()
-        elif pressed_key == pg.K_z:
-            self.tetromino.rotate()
-        elif pressed_key == pg.K_x:
-            pass
+        elif pressed_key == pg.K_z: # Xoay theo chiều kim đồng hồ
+            self.tetromino.rotate(1)
+        elif pressed_key == pg.K_x: # Xoay ngược chiều kim đồng hồ
+            self.tetromino.rotate(-1)
         elif pressed_key == pg.K_c:
-            pass
+            self.moving_left = False
+            self.moving_right = False
+            self.moving_down = False
+            self.tetromino.move_all_the_way_down()
 
 
     def hold_key_handle(self):

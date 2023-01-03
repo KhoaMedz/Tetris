@@ -43,8 +43,8 @@ class Tetromino():
                 return True
         return False
     
-    def rotate(self):
-        self.tetromino_rotation = (self.tetromino_rotation + 1) % len(TETROMINOS[self.tetromino_name])
+    def rotate(self, rotation_direction):
+        self.tetromino_rotation = (self.tetromino_rotation + rotation_direction) % len(TETROMINOS[self.tetromino_name])
         tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
         list_new_pos = []
         for x in range(SHAPE_TEMPLATE_COLS):
@@ -55,6 +55,18 @@ class Tetromino():
             for i in range(len(self.blocks)):
                 self.blocks[i].set_block_pos(list_new_pos[i])
         
+    def move_all_the_way_down(self):
+        for i in range(1, TETRIS_HEIGHT):
+            new_tetromino_pos = [block.block_pos + (0, i) for block in self.blocks]
+            if self.is_collide(new_tetromino_pos):
+                break
+        for block in self.blocks:
+            block.block_pos += (0, i - 1)
+        self.landing = True
+        
+
+
+
 
     def update(self):
         if time.time() - self.tetris.last_fall_down_time > self.tetris.fall_frequency:
