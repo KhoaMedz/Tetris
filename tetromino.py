@@ -43,6 +43,7 @@ class Tetromino():
                 return True
         return False
     
+    
     def rotate(self, rotation_direction):
         self.tetromino_rotation = (self.tetromino_rotation + rotation_direction) % len(TETROMINOS[self.tetromino_name])
         tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
@@ -63,9 +64,6 @@ class Tetromino():
         for block in self.blocks:
             block.block_pos += (0, i - 1)
         self.landing = True
-        
-
-
 
 
     def update(self):

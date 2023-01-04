@@ -52,6 +52,17 @@ class Tetris():
             x, y = int(block.block_pos.x), int(block.block_pos.y)
             self.tetris_matrix[x][y] = block
 
+    def is_out_of_index(self, x, y):
+        if 0 <= x < TETRIS_COLS and 0 <= y < TETRIS_HEIGHT:
+            return False
+        return True
+
+    def is_game_over(self):
+        for block in self.tetromino.blocks:
+            x, y = int(block.block_pos.x), int(block.block_pos.y)
+            if self.is_out_of_index(x ,y):
+                return True
+        return False
 
     def draw_grid(self):
         for x in range(TETRIS_COLS):
@@ -92,6 +103,11 @@ class Tetris():
             self.moving_right = False
             self.moving_down = False
             self.tetromino.move_all_the_way_down()
+        elif pressed_key == pg.K_p:
+            self.draw_text_on_screen('PAUSE')
+            self.last_fall_down_time = time.time()
+            self.last_move_down_time = time.time()
+            self.last_move_sideways_time = time.time()
 
 
     def hold_key_handle(self):
@@ -109,13 +125,17 @@ class Tetris():
 
     def landed_tetromino_handle(self):
         if self.tetromino.landing:
-            self.put_tetromino_blocks_into_matrix()
-            removed_lines_num = self.removed_completed_lines()
-            self.calculate_score(removed_lines_num)
-            self.calculate_level()
-            self.calculate_fall_frequency()
-            self.tetromino = self.tetromino_queue.get()
-            self.tetromino_queue.put(Tetromino(self))
+            if self.is_game_over():
+                self.draw_text_on_screen('Game Over')
+                self.__init__(self.app) # game over handle
+            else:
+                self.put_tetromino_blocks_into_matrix()
+                removed_lines_num = self.removed_completed_lines()
+                self.calculate_score(removed_lines_num)
+                self.calculate_level()
+                self.calculate_fall_frequency()
+                self.tetromino = self.tetromino_queue.get()
+                self.tetromino_queue.put(Tetromino(self))
 
 
     def is_completed_line(self, line):
@@ -203,6 +223,36 @@ class Tetris():
         self.score_surface.blit(labels[3], (margin_x, margin_y + FONT_SIZE_SCORE * 3))
 
         self.app.display_screen.blit(self.score_surface, DRAW_SCORE_POS)
+
+
+    def draw_text_on_screen(self, text):
+        # Tạo text
+        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', 100)
+        text_surface = pixel_font.render(text, 1, 'red')
+        text_rect = text_surface.get_rect()
+        text_rect.center = (TETRIS_WIDTH // 2, TETRIS_HEIGHT // 2)
+        # Tạo 'press any key to continue or ESC to exit'
+        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', 35)
+        text_surface_2 = pixel_font.render('Press any key to continue or ESC to exit', 1, 'red')
+        text_2_rect = text_surface_2.get_rect()
+        text_2_rect.center = (TETRIS_WIDTH // 2, TETRIS_HEIGHT // 2 + 50)
+        # Vẽ text lên tetris surface
+        self.tetris_surface.blit(text_surface, text_rect)
+        self.tetris_surface.blit(text_surface_2, text_2_rect)
+        # Vẽ tetris surface lên main surface
+        self.app.display_screen.blit(self.tetris_surface, TETRIS_SURFACE_POS)
+        while not self.is_pressed():
+            pg.display.flip()
+            self.app.fps_clock.tick()
+
+
+    def is_pressed(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+                self.app.terminate_program()
+            elif event.type == pg.KEYDOWN:
+                return True
+        return False
 
 
     def update(self):
