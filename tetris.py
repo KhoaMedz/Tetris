@@ -10,6 +10,7 @@ class Tetris():
         self.tetris_surface = pg.Surface(TETRIS_RES)
         self.score_surface = pg.Surface((FONT_SIZE_SCORE * 7, FONT_SIZE_SCORE * 4))
         self.tetromino_queue_surface = pg.Surface(TETROMINO_QUEUE_RES)
+        self.tetris_background = self.load_image()
         self.create_last_action_time()
         self.create_moving_action()
         self.create_tetris_matrix()
@@ -47,6 +48,12 @@ class Tetris():
         self.fall_frequency = ORIGINAL_FALL_FREQUENCY
 
 
+    def load_image(self):
+        # Nối tên file với thư mục chứa mã nguồn, để load ảnh ko bị lỗi
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'images/background/tetris_background.png')
+        return pg.transform.scale(pg.image.load(image_path), (TETRIS_WIDTH, TETRIS_HEIGHT))
+
+
     def put_tetromino_blocks_into_matrix(self):
         for block in self.tetromino.blocks:
             x, y = int(block.block_pos.x), int(block.block_pos.y)
@@ -68,6 +75,10 @@ class Tetris():
         for x in range(TETRIS_COLS):
             for y in range(TETRIS_ROWS):
                 pg.draw.rect(self.tetris_surface, GREY, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+
+
+    def draw_background(self):
+        self.tetris_surface.blit(self.tetris_background, (0, 0))
 
 
     def key_up_handle(self, release_key):
@@ -227,12 +238,13 @@ class Tetris():
 
     def draw_text_on_screen(self, text):
         # Tạo text
-        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', 100)
+        font_path = os.path.join(SOURCES_FILE_DIRECTORY, 'fonts/PixelatedRegular.ttf')
+        pixel_font = pg.font.Font(font_path, 100)
         text_surface = pixel_font.render(text, 1, 'red')
         text_rect = text_surface.get_rect()
         text_rect.center = (TETRIS_WIDTH // 2, TETRIS_HEIGHT // 2)
         # Tạo 'press any key to continue or ESC to exit'
-        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', 35)
+        pixel_font = pg.font.Font(font_path, 35)
         text_surface_2 = pixel_font.render('Press any key to continue or ESC to exit', 1, 'red')
         text_2_rect = text_surface_2.get_rect()
         text_2_rect.center = (TETRIS_WIDTH // 2, TETRIS_HEIGHT // 2 + 50)
@@ -263,8 +275,8 @@ class Tetris():
 
 
     def draw(self):
-        self.tetris_surface.fill(BROWN)
-        self.draw_grid()
+        self.draw_background()
+        #self.draw_grid()
         self.draw_tetromino_queue()
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
         self.draw_score(10, 10)

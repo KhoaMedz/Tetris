@@ -6,13 +6,14 @@ class Tetromino():
         self.tetris = tetris
         self.create_tetromino(self.tetris.is_first_tetromino)
         self.landing = False
-
+        
 
     def create_tetromino(self, is_first_tetromino):
         if is_first_tetromino == True:
             self.core_pos = vector(INITIAL_TETROMINO_POS) # Tọa độ gốc
         else:
             self.core_pos = vector(NEXT_TETROMINO_POS)
+
         self.tetromino_name = random.choice(list(TETROMINOS.keys()))
         self.tetromino_rotation = random.randint(0, len(TETROMINOS[self.tetromino_name]) - 1)
         tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
@@ -21,6 +22,8 @@ class Tetromino():
             for y in range(SHAPE_TEMPLATE_ROWS):
                 if tetromino_shape[y][x] == 'o':
                     blocks_pos.append(vector(x, y) + self.core_pos)
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'images/blocks/block_{TETROMINOS_IMAGE_NUMBER[self.tetromino_name]}.png')
+        self.image = pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE))
         self.blocks = [Block(self, pos) for pos in blocks_pos]
 
 

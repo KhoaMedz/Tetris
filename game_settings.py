@@ -1,11 +1,11 @@
 import pygame as pg
-import sys, random, time, queue
+import sys, random, time, queue, pathlib, os
 vector = pg.math.Vector2
 
 # Thiết lập kích thước
-WINDOW_RES = WINDOW_WIDTH, WINDOW_HEIGHT = 1600, 900
-BLOCK_SIZE = 42
-TETROMINO_QUEUE_BLOCK_SIZE = 15
+WINDOW_RES = WINDOW_WIDTH, WINDOW_HEIGHT = 1920, 1080 # 1600, 900
+BLOCK_SIZE = 50
+TETROMINO_QUEUE_BLOCK_SIZE = 18
 TETRIS_COLS = 10
 TETRIS_ROWS = 20
 TETRIS_RES = TETRIS_WIDTH, TETRIS_HEIGHT = TETRIS_COLS * BLOCK_SIZE, TETRIS_ROWS * BLOCK_SIZE
@@ -38,6 +38,8 @@ NEXT_TETROMINO_POS = vector(3, -4) # Tọa độ sinh khối tetromino tiếp
 # Score font size
 FONT_SIZE_SCORE = 50
 
+# Lấy thư mục hiện tại đang chứa file này
+SOURCES_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 # Tetromino's Shape
 SHAPE_TEMPLATE_COLS = 5
@@ -170,3 +172,20 @@ TETROMINOS = {'I': I_TEMP,
 MOVE_DIRECTIONS = {'left': vector(-1, 0),
              'right': vector(1, 0),
              'down': vector(0, 1)}
+
+
+# Số hiệu ảnh theo hình khối tetromino
+TETROMINOS_IMAGE_NUMBER = {'I': 0,
+                           'L': 1,
+                           'J': 2,
+                           'S': 3,
+                           'Z': 4,
+                           'T': 5,
+                           'O': 6}
+
+# List ảnh các khối block
+block_image = []
+
+for i in range(len(TETROMINOS)):
+    image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'images/blocks/block_{i}.png')
+    block_image.append(pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE)))

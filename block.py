@@ -5,8 +5,9 @@ class Block(pg.sprite.Sprite):
         self.tetromino = tetromino
         super().__init__(self.tetromino.tetris.sprites_group)
         self.block_pos = vector(block_pos)
-        self.image = pg.Surface((BLOCK_SIZE - 2, BLOCK_SIZE - 2))
-        self.image.fill(WHITE)
+        # self.image = pg.Surface((BLOCK_SIZE - 2, BLOCK_SIZE - 2))
+        # self.image.fill(WHITE)
+        self.image = tetromino.image
         self.rect = self.image.get_rect()
         self.rect.topleft = self.block_pos * BLOCK_SIZE + (1, 1)
         self.alive = True
