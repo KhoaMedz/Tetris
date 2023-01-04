@@ -8,9 +8,13 @@ class Tetris():
         self.is_first_tetromino = True
         self.tetromino = Tetromino(self)
         self.tetris_surface = pg.Surface(TETRIS_RES)
-        self.score_surface = pg.Surface((FONT_SIZE_SCORE * 7, FONT_SIZE_SCORE * 4))
+        self.score_surface = pg.Surface((300, 175), pg.SRCALPHA, 32).convert_alpha()
+        self.next_level_surface = pg.Surface((300, 175), pg.SRCALPHA, 32).convert_alpha()
+        self.level_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
+        self.speed_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
         self.tetromino_queue_surface = pg.Surface(TETROMINO_QUEUE_RES)
-        self.tetris_background = self.load_image()
+        self.tetris_background_image = self.load_image('images/background/tetris_background.png', TETRIS_WIDTH, TETRIS_HEIGHT)
+        self.tetris_border_image = self.load_image('images/background/tetris_border.png', TETRIS_WIDTH + 34, TETRIS_HEIGHT + 93)
         self.create_last_action_time()
         self.create_moving_action()
         self.create_tetris_matrix()
@@ -48,10 +52,10 @@ class Tetris():
         self.fall_frequency = ORIGINAL_FALL_FREQUENCY
 
 
-    def load_image(self):
+    def load_image(self, image_path, image_width, image_height):
         # Nối tên file với thư mục chứa mã nguồn, để load ảnh ko bị lỗi
-        image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'images/background/tetris_background.png')
-        return pg.transform.scale(pg.image.load(image_path), (TETRIS_WIDTH, TETRIS_HEIGHT))
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, image_path)
+        return pg.transform.scale(pg.image.load(image_path).convert_alpha(), (image_width, image_height))
 
 
     def put_tetromino_blocks_into_matrix(self):
@@ -77,8 +81,12 @@ class Tetris():
                 pg.draw.rect(self.tetris_surface, GREY, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
 
 
-    def draw_background(self):
-        self.tetris_surface.blit(self.tetris_background, (0, 0))
+    def draw_background(self, pos):
+        self.tetris_surface.blit(self.tetris_background_image, pos)
+
+
+    def draw_tetris_border(self, pos):
+        self.app.display_screen.blit(self.tetris_border_image, pos)
 
 
     def key_up_handle(self, release_key):
@@ -219,21 +227,65 @@ class Tetris():
         self.app.display_screen.blit(self.tetromino_queue_surface, TETROMINO_QUEUE_SURFACE_POS)
 
 
-    def draw_score(self, margin_x = 0, margin_y = 0):
-        self.score_surface.fill('white')
+    # def draw_score(self, margin_x = 0, margin_y = 0):
+    #     self.score_surface.fill('white')
+    #     pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+    #     labels = []
+    #     texts = [f'Score:    {self.score}', f'Level:    {self.level}', f'Next level:    {self.score_to_reach_next_level}', f'Fall frequency:    {self.fall_frequency} s']
+
+    #     for line in range(len(texts)):
+    #         labels.append(pixel_font.render(texts[line], 1, 'orange'))
+
+    #     self.score_surface.blit(labels[0], (margin_x, margin_y + FONT_SIZE_SCORE * 0))
+    #     self.score_surface.blit(labels[1], (margin_x, margin_y + FONT_SIZE_SCORE * 1))
+    #     self.score_surface.blit(labels[2], (margin_x, margin_y + FONT_SIZE_SCORE * 2))
+    #     self.score_surface.blit(labels[3], (margin_x, margin_y + FONT_SIZE_SCORE * 3))
+
+    #     self.app.display_screen.blit(self.score_surface, DRAW_SCORE_POS)
+
+
+    def draw_score(self):
+        score_background_image = self.load_image('images/background/sign_0.png', 300, 175)
         pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
-        labels = []
-        texts = [f'Score:    {self.score}', f'Level:    {self.level}', f'Next level:    {self.score_to_reach_next_level}', f'Fall frequency:    {self.fall_frequency} s']
+        score_text = pixel_font.render('SCORE', 1, 'white')
+        score_number_text = pixel_font.render(str(self.score), 1, 'white')
+        self.score_surface.blit(score_background_image, (0, 0))
+        self.score_surface.blit(score_text, (100, 18))
+        self.score_surface.blit(score_number_text, (70, 100))
+        self.app.display_screen.blit(self.score_surface, (DRAW_SCORE_POS))
 
-        for line in range(len(texts)):
-            labels.append(pixel_font.render(texts[line], 1, 'orange'))
 
-        self.score_surface.blit(labels[0], (margin_x, margin_y + FONT_SIZE_SCORE * 0))
-        self.score_surface.blit(labels[1], (margin_x, margin_y + FONT_SIZE_SCORE * 1))
-        self.score_surface.blit(labels[2], (margin_x, margin_y + FONT_SIZE_SCORE * 2))
-        self.score_surface.blit(labels[3], (margin_x, margin_y + FONT_SIZE_SCORE * 3))
+    def draw_next_level(self):
+        next_level_background_image = self.load_image('images/background/sign_0.png', 300, 175)
+        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        next_level_text = pixel_font.render('NEXT   LV', 1, 'white')
+        next_level_number_text = pixel_font.render(str(self.score_to_reach_next_level), 1, 'white')
+        self.next_level_surface.blit(next_level_background_image, (0, 0))
+        self.next_level_surface.blit(next_level_text, (80, 18))
+        self.next_level_surface.blit(next_level_number_text, (70, 100))
+        self.app.display_screen.blit(self.next_level_surface, (DRAW_NEXT_LEVEL_POS))
 
-        self.app.display_screen.blit(self.score_surface, DRAW_SCORE_POS)
+
+    def draw_level(self):
+        level_background_image = self.load_image('images/background/sign_0.png', 175, 175)
+        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        level_text = pixel_font.render('LEVEL', 1, 'white')
+        level_number_text = pixel_font.render(str(self.level), 1, 'white')
+        self.level_surface.blit(level_background_image, (0, 0))
+        self.level_surface.blit(level_text, (42, 18))
+        self.level_surface.blit(level_number_text, (50, 100))
+        self.app.display_screen.blit(self.level_surface, (DRAW_LEVEL_POS))
+
+
+    def draw_speed(self):
+        speed_background_image = self.load_image('images/background/sign_0.png', 175, 175)
+        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        speed_text = pixel_font.render('SPEED', 1, 'white')
+        speed_number_text = pixel_font.render(f'drop/{str(self.fall_frequency)} s', 1, 'white')
+        self.speed_surface.blit(speed_background_image, (0, 0))
+        self.speed_surface.blit(speed_text, (42, 18))
+        self.speed_surface.blit(speed_number_text, (20, 100))
+        self.app.display_screen.blit(self.speed_surface, (DRAW_SPEED_POS))
 
 
     def draw_text_on_screen(self, text):
@@ -253,6 +305,7 @@ class Tetris():
         self.tetris_surface.blit(text_surface_2, text_2_rect)
         # Vẽ tetris surface lên main surface
         self.app.display_screen.blit(self.tetris_surface, TETRIS_SURFACE_POS)
+        self.draw_tetris_border(TETRIS_SURFACE_POS + (-17, -70)) # Vẽ khung lên main surface (display_screen)
         while not self.is_pressed():
             pg.display.flip()
             self.app.fps_clock.tick()
@@ -275,10 +328,14 @@ class Tetris():
 
 
     def draw(self):
-        self.draw_background()
+        self.draw_background(vector(0, 0))
         #self.draw_grid()
         self.draw_tetromino_queue()
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
-        self.draw_score(10, 10)
+        self.draw_score()
+        self.draw_next_level()
+        self.draw_level()
+        self.draw_speed()
+        # self.draw_score(10, 10)
     
 

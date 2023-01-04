@@ -4,8 +4,9 @@ from tetris import *
 class App():
     def __init__(self):
         pg.init()
-        self.tetris = Tetris(self)
         self.display_screen = pg.display.set_mode(WINDOW_RES)
+        self.tetris = Tetris(self)
+        
         pg.display.set_caption('Tetris')
         self.background_image = self.load_image()
         self.fps_clock = pg.time.Clock()
@@ -43,6 +44,7 @@ class App():
         self.draw_main_background()
         self.tetris.draw()
         self.display_screen.blit(self.tetris.tetris_surface, TETRIS_SURFACE_POS)
+        self.tetris.draw_tetris_border(TETRIS_SURFACE_POS + (-17, -70))
         pg.display.flip()
         self.fps_clock.tick(FPS)
 
