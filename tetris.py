@@ -12,7 +12,7 @@ class Tetris():
         self.next_level_surface = pg.Surface((300, 175), pg.SRCALPHA, 32).convert_alpha()
         self.level_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
         self.speed_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
-        self.tetromino_queue_surface = pg.Surface(TETROMINO_QUEUE_RES)
+        self.tetromino_queue_surface = pg.Surface((123, 550), pg.SRCALPHA, 32).convert_alpha()
         self.tetris_background_image = self.load_image('images/background/tetris_background.png', TETRIS_WIDTH, TETRIS_HEIGHT)
         self.tetris_border_image = self.load_image('images/background/tetris_border.png', TETRIS_WIDTH + 38, TETRIS_HEIGHT + 118)
         self.create_last_action_time()
@@ -39,7 +39,7 @@ class Tetris():
 
 
     def create_tetromino_queue(self):
-        self.tetromino_queue = queue.Queue(maxsize=5) # Tetromino queue gồm 5 khối tetromino
+        self.tetromino_queue = queue.Queue(maxsize=4) # Tetromino queue gồm 5 khối tetromino
         self.is_first_tetromino = False
         for i in range(self.tetromino_queue.maxsize):
             self.tetromino_queue.put(Tetromino(self))
@@ -215,16 +215,13 @@ class Tetris():
 
 
     def draw_tetromino_queue(self):
-        self.tetromino_queue_surface.fill(LIGHT_BROWN)
-        tetromino_queue_grid_rects = [pg.Rect(x * TETROMINO_QUEUE_BLOCK_SIZE, y * TETROMINO_QUEUE_BLOCK_SIZE, TETROMINO_QUEUE_BLOCK_SIZE, TETROMINO_QUEUE_BLOCK_SIZE) for x in range(TETROMINO_QUEUE_COLS) for y in range(TETROMINO_QUEUE_ROWS)]
-        [pg.draw.rect(self.tetromino_queue_surface, GREY, i, 1) for i in tetromino_queue_grid_rects]
-        tetronimo_queue_y = 1
-
+        tetromino_queue_background_image = self.load_image('images/background/tetromino_queue_background.png', 123, 550)
+        self.tetromino_queue_surface.blit(tetromino_queue_background_image, (0, 0))
+        tetronimo_queue_y = 73
         for tetromino in self.tetromino_queue.queue:
-            tetromino.draw_piece(self.tetromino_queue_surface, TETROMINO_QUEUE_BLOCK_SIZE, 1, tetronimo_queue_y)
-            tetronimo_queue_y += 5
-
-        self.app.display_screen.blit(self.tetromino_queue_surface, TETROMINO_QUEUE_SURFACE_POS)
+            tetromino.draw_piece(self.tetromino_queue_surface, TETROMINO_QUEUE_BLOCK_SIZE, 29, tetronimo_queue_y)
+            tetronimo_queue_y += 129
+        self.app.display_screen.blit(self.tetromino_queue_surface, (TETROMINO_QUEUE_SURFACE_POS))
 
 
     def draw_score(self):
@@ -319,6 +316,5 @@ class Tetris():
         self.draw_next_level()
         self.draw_level()
         self.draw_speed()
-        # self.draw_score(10, 10)
     
 

@@ -75,11 +75,11 @@ class Tetromino():
             self.tetris.last_fall_down_time = time.time()
 
 
-    def draw_piece(self, surface, block_size, core_pos_X = 0, core_pos_Y = 0):
+    def draw_piece(self, surface, block_size, core_pos_X = 0, core_pos_Y = 0): # core_pos của hàm này là tọa độ thực (dựa theo resolution), ko phải tọa độ trong matrix
         tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
         for x in range(5):
                 for y in range(5):
                     if  tetromino_shape[y][x] == 'o':
-                        coor_to_draw_X = (x + core_pos_X) * block_size
-                        coor_to_draw_Y = (y + core_pos_Y) * block_size
+                        coor_to_draw_X = (x * block_size) +  core_pos_X
+                        coor_to_draw_Y = (y * block_size) + core_pos_Y
                         Block.draw_block(self.blocks[0], surface, coor_to_draw_X, coor_to_draw_Y, block_size)

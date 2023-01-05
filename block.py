@@ -34,4 +34,4 @@ class Block(pg.sprite.Sprite):
         self.is_alive()
 
     def draw_block(self, surface, coordinate_X, coordinate_Y, block_size):
-        pg.draw.rect(surface, WHITE, (coordinate_X + 1, coordinate_Y + 1, block_size - 2, block_size - 2))
+        pg.draw.rect(surface, WHITE, (coordinate_X, coordinate_Y, block_size, block_size))
