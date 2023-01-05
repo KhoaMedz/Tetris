@@ -20,12 +20,12 @@ class Tetris():
         self.create_tetris_matrix()
         self.create_tetromino_queue()
         self.create_score_attributes()
-        
+
         
     def create_last_action_time(self):
         self.last_fall_down_time = time.time()
         self.last_move_sideways_time = time.time()
-        self.last_move_down_time =time.time()
+        self.last_move_down_time = time.time()
 
 
     def create_moving_action(self):
@@ -148,6 +148,7 @@ class Tetris():
                 self.draw_text_on_screen('Game Over')
                 self.__init__(self.app) # game over handle
             else:
+                self.play_sound('music/sound_effects/brick_drop.mp3')
                 self.put_tetromino_blocks_into_matrix()
                 removed_lines_num = self.removed_completed_lines()
                 self.calculate_score(removed_lines_num)
@@ -176,13 +177,13 @@ class Tetris():
                         self.tetris_matrix[x][y] = self.tetris_matrix[x][y - 1]
                         if self.tetris_matrix[x][y]:
                             self.tetris_matrix[x][y].block_pos = vector(x, y)
-                    
                 for x in range(TETRIS_COLS):
                     self.tetris_matrix[x][0] = 0
-
                 removed_lines_num += 1
             else:
                 line -= 1
+        if removed_lines_num > 0:
+            self.app.time_stop = True
         return removed_lines_num
 
 
@@ -298,6 +299,13 @@ class Tetris():
             elif event.type == pg.KEYDOWN:
                 return True
         return False
+
+
+    def play_sound(self, sound_path):
+        sound_path = os.path.join(SOURCES_FILE_DIRECTORY, sound_path)
+        sound_to_play = pg.mixer.Sound(sound_path)
+        sound_to_play.play()
+
 
 
     def update(self):

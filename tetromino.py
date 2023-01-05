@@ -55,7 +55,11 @@ class Tetromino():
             for y in range(SHAPE_TEMPLATE_ROWS):
                 if tetromino_shape[y][x] == 'o':
                     list_new_pos.append(vector(x, y) + self.core_pos)
-        if not self.is_collide(list_new_pos):
+        if self.is_collide(list_new_pos):
+            self.tetris.play_sound('music/sound_effects/blocking_sound.mp3')
+            self.tetromino_rotation = (self.tetromino_rotation - rotation_direction) % len(TETROMINOS[self.tetromino_name])
+        else:
+            self.tetris.play_sound('music/sound_effects/rotate_sound.mp3')
             for i in range(len(self.blocks)):
                 self.blocks[i].set_block_pos(list_new_pos[i])
         
@@ -66,6 +70,7 @@ class Tetromino():
                 break
         for block in self.blocks:
             block.block_pos += (0, i - 1)
+            block.set_rect_topleft() #Sau khi đáp đất thì cập nhật ngay tọa độ của rect để group vẽ. Điều này là để fix lỗi khi chạy hiệu ứng xóa hàng
         self.landing = True
 
 

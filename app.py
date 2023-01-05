@@ -4,12 +4,20 @@ from tetris import *
 class App():
     def __init__(self):
         pg.init()
+        pg.mixer.set_num_channels(100)
         self.display_screen = pg.display.set_mode(WINDOW_RES)
         self.tetris = Tetris(self)
-        
         pg.display.set_caption('Tetris')
         self.background_image = self.load_image()
         self.fps_clock = pg.time.Clock()
+        self.set_timer()
+        self.time_stop = False # Biến dùng để tạm thời dừng cập nhật tọa độ rect
+        
+
+    def set_timer(self):
+        self.effect_trigger = False
+        self.effect_event = pg.USEREVENT + 0
+        pg.time.set_timer(self.effect_event, 150)
 
 
     def terminate_program(self):
@@ -18,6 +26,7 @@ class App():
    
 
     def check_events(self):
+        self.effect_trigger = False
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 self.terminate_program()
@@ -25,6 +34,8 @@ class App():
                 self.tetris.key_down_handle(pressed_key=event.key)
             elif event.type == pg.KEYUP:
                 self.tetris.key_up_handle(release_key=event.key)
+            elif event.type == self.effect_event:
+                self.effect_trigger = True
 
     
     def load_image(self):
