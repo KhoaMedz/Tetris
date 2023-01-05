@@ -44,7 +44,7 @@ class App():
         self.draw_main_background()
         self.tetris.draw()
         self.display_screen.blit(self.tetris.tetris_surface, TETRIS_SURFACE_POS)
-        self.tetris.draw_tetris_border(TETRIS_SURFACE_POS + (-17, -70))
+        self.tetris.draw_tetris_border(TETRIS_SURFACE_POS + (-17, -87))
         pg.display.flip()
         self.fps_clock.tick(FPS)
 
