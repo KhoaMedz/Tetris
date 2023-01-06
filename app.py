@@ -11,7 +11,6 @@ class App():
         self.background_image = self.load_image()
         self.fps_clock = pg.time.Clock()
         self.set_timer()
-        self.time_stop = False # Biến dùng để tạm thời dừng cập nhật tọa độ rect
         
 
     def set_timer(self):
@@ -55,7 +54,7 @@ class App():
         self.draw_main_background()
         self.tetris.draw()
         self.display_screen.blit(self.tetris.tetris_surface, TETRIS_SURFACE_POS)
-        self.tetris.draw_tetris_border(TETRIS_SURFACE_POS + (-17, -87))
+        self.tetris.draw_tetris_border(TETRIS_SURFACE_POS + (-19, -87))
         pg.display.flip()
         self.fps_clock.tick(FPS)
 

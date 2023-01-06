@@ -14,7 +14,7 @@ class Tetris():
         self.speed_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
         self.tetromino_queue_surface = pg.Surface((123, 550), pg.SRCALPHA, 32).convert_alpha()
         self.tetris_background_image = self.load_image('images/background/tetris_background.png', TETRIS_WIDTH, TETRIS_HEIGHT)
-        self.tetris_border_image = self.load_image('images/background/tetris_border.png', TETRIS_WIDTH + 38, TETRIS_HEIGHT + 118)
+        self.tetris_border_image = self.load_image('images/background/tetris_border.png', TETRIS_WIDTH + 40, TETRIS_HEIGHT + 118)
         self.create_last_action_time()
         self.create_moving_action()
         self.create_tetris_matrix()
@@ -39,7 +39,7 @@ class Tetris():
 
 
     def create_tetromino_queue(self):
-        self.tetromino_queue = queue.Queue(maxsize=4) # Tetromino queue gồm 5 khối tetromino
+        self.tetromino_queue = queue.Queue(maxsize=4) # Tetromino queue gồm 4 khối tetromino
         self.is_first_tetromino = False
         for i in range(self.tetromino_queue.maxsize):
             self.tetromino_queue.put(Tetromino(self))
@@ -148,7 +148,7 @@ class Tetris():
                 self.draw_text_on_screen('Game Over')
                 self.__init__(self.app) # game over handle
             else:
-                self.play_sound('music/sound_effects/brick_drop.mp3')
+                self.play_sound('music/sound_effects/drop_sound.mp3')
                 self.put_tetromino_blocks_into_matrix()
                 removed_lines_num = self.removed_completed_lines()
                 self.calculate_score(removed_lines_num)
@@ -182,8 +182,6 @@ class Tetris():
                 removed_lines_num += 1
             else:
                 line -= 1
-        if removed_lines_num > 0:
-            self.app.time_stop = True
         return removed_lines_num
 
 
@@ -286,7 +284,7 @@ class Tetris():
         self.tetris_surface.blit(text_surface_2, text_2_rect)
         # Vẽ tetris surface lên main surface
         self.app.display_screen.blit(self.tetris_surface, TETRIS_SURFACE_POS)
-        self.draw_tetris_border(TETRIS_SURFACE_POS + (-17, -87)) # Vẽ khung lên main surface (display_screen)
+        self.draw_tetris_border(TETRIS_SURFACE_POS + (-19, -87)) # Vẽ khung lên main surface (display_screen)
         while not self.is_pressed():
             pg.display.flip()
             self.app.fps_clock.tick()

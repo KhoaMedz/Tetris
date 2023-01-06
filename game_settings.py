@@ -28,6 +28,7 @@ BROWN = (39, 22, 0)
 LIGHT_BROWN = (198, 168, 129)
 GREY = (105, 105, 105)
 
+
 # Time and FPS
 ORIGINAL_FALL_FREQUENCY = 1
 MOVE_SIDEAWAYS_FREQUENCY = 0.05
@@ -43,6 +44,7 @@ FONT_SIZE_SCORE = 50
 
 # Lấy thư mục hiện tại đang chứa file này
 SOURCES_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+
 
 # Tetromino's Shape
 SHAPE_TEMPLATE_COLS = 5

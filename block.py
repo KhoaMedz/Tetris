@@ -9,10 +9,16 @@ class Block(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = self.block_pos * BLOCK_SIZE
         self.alive = True
-        self.sfx_image = self.image.copy()
-        self.sfx_image.set_alpha(110)
-        self.sfx_speed = random.uniform(0.2, 0.6)
-        self.sfx_cycles = random.randrange(6, 8)
+        self.create_block_sfx()
+
+
+    def create_block_sfx(self):
+        img_index = random.randint(0, 16)
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'images/effect/star_{img_index}.png')
+        self.sfx_image = pg.image.load(image_path).convert_alpha()
+        # self.sfx_image.set_alpha(160)
+        self.sfx_speed = random.uniform(0.1, 0.8)
+        self.sfx_cycles = random.randrange(6, 12)
         self.cycle_counter = 0
 
 
@@ -21,12 +27,12 @@ class Block(pg.sprite.Sprite):
             self.cycle_counter += 1
             if self.cycle_counter > self.sfx_cycles:
                 self.cycle_counter = 0
-                self.tetromino.tetris.app.time_stop = False
                 return True
 
 
     def sfx_run(self):
         self.image = self.sfx_image
+        self.block_pos.y -= self.sfx_speed
         self.image = pg.transform.rotate(self.image, pg.time.get_ticks() * self.sfx_speed)
 
 
@@ -37,12 +43,6 @@ class Block(pg.sprite.Sprite):
                 else:
                     self.kill()
 
-
-
-    # def is_alive(self):
-    #     if not self.alive:
-    #         self.kill()
- 
 
     def set_rect_topleft(self):
         self.rect.topleft = self.block_pos * BLOCK_SIZE
@@ -58,8 +58,7 @@ class Block(pg.sprite.Sprite):
         return True
 
     def update(self):
-        if self.tetromino.tetris.app.time_stop == False:
-            self.set_rect_topleft()
+        self.set_rect_topleft()
         self.is_alive()
 
     def draw_block(self, surface, coordinate_X, coordinate_Y, block_size):

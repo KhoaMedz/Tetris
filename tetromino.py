@@ -59,7 +59,7 @@ class Tetromino():
             self.tetris.play_sound('music/sound_effects/blocking_sound.mp3')
             self.tetromino_rotation = (self.tetromino_rotation - rotation_direction) % len(TETROMINOS[self.tetromino_name])
         else:
-            self.tetris.play_sound('music/sound_effects/rotate_sound.mp3')
+            self.tetris.play_sound('music/sound_effects/rotate_sound.wav')
             for i in range(len(self.blocks)):
                 self.blocks[i].set_block_pos(list_new_pos[i])
         
@@ -70,7 +70,8 @@ class Tetromino():
                 break
         for block in self.blocks:
             block.block_pos += (0, i - 1)
-            block.set_rect_topleft() #Sau khi đáp đất thì cập nhật ngay tọa độ của rect để group vẽ. Điều này là để fix lỗi khi chạy hiệu ứng xóa hàng
+            block.set_rect_topleft() #Sau khi đáp đất thì cập nhật ngay tọa độ của rect để group vẽ (do nếu rơi vào trường hợp game over thì vẫn có thể vẽ khối này)
+            self.tetris.sprites_group.draw(self.tetris.tetris_surface) #Vẽ
         self.landing = True
 
 
