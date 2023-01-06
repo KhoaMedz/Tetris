@@ -3,6 +3,11 @@ from tetromino import *
 
 class Tetris():
     def __init__(self, app):
+        """
+        Input: Đối tượng App, để class này có thể truy cập vào đối tượng App.
+        Process: Khởi tạo các giá trị cho đối tượng Tetris.
+        Ouput: Không.
+        """
         self.app = app
         self.sprites_group = pg.sprite.Group()
         self.is_first_tetromino = True
@@ -23,22 +28,43 @@ class Tetris():
 
         
     def create_last_action_time(self):
+        """
+        Input: Không.
+        Process: Khởi tạo thời gian cho các biến có tên là "lần cuối thực hiện một loại hành động nào đó." Các biến này dùng để thực hiện các
+        hành động theo một chu kỳ nào đó.
+        Ouput: Không.
+        """
         self.last_fall_down_time = time.time()
         self.last_move_sideways_time = time.time()
         self.last_move_down_time = time.time()
 
 
     def create_moving_action(self):
+        """
+        Input: Không.
+        Process: Khởi tạo các biến "tiếp tục di chuyển". Dùng để tiếp tục di chuyển một khối khi giữ phím.
+        Ouput: Không.
+        """
         self.moving_left = False
         self.moving_right = False
         self.moving_down = False
 
 
     def create_tetris_matrix(self):
+        """
+        Input: Không.
+        Process: Khởi tạo ma trận lưu các giá trị là các khối block (khói vuông nhỏ). Ma trận này dùng để xóa hàng, tính điểm,...
+        Ouput: Không.
+        """
         self.tetris_matrix = [[0] * TETRIS_HEIGHT for x in range(TETRIS_COLS)]
 
 
     def create_tetromino_queue(self):
+        """
+        Input: Không.
+        Process: Khởi tạo hàng đợi cho các khối tetromino tiếp theo.
+        Ouput: Không.
+        """
         self.tetromino_queue = queue.Queue(maxsize=4) # Tetromino queue gồm 4 khối tetromino
         self.is_first_tetromino = False
         for i in range(self.tetromino_queue.maxsize):
@@ -46,6 +72,11 @@ class Tetris():
 
 
     def create_score_attributes(self):
+        """
+        Input: Không.
+        Process: Khởi tạo các biến điểm, level, chu kỳ rơi.
+        Ouput: Không.
+        """
         self.score = 0
         self.level = 1
         self.score_to_reach_next_level = 2000
@@ -53,43 +84,86 @@ class Tetris():
 
 
     def load_image(self, image_path, image_width, image_height):
+        """
+        Input: Đường dẫn ảnh, chiều rộng, cao của ảnh.
+        Process: Tải và scale ảnh theo input.
+        Ouput: Trả về ảnh.
+        """
         # Nối tên file với thư mục chứa mã nguồn, để load ảnh ko bị lỗi
         image_path = os.path.join(SOURCES_FILE_DIRECTORY, image_path)
         return pg.transform.scale(pg.image.load(image_path).convert_alpha(), (image_width, image_height))
 
 
     def put_tetromino_blocks_into_matrix(self):
+        """
+        Input: Khối tetromino.
+        Process: Gán khối tetromino vào ma trận.
+        Ouput: Không.
+        """
         for block in self.tetromino.blocks:
             x, y = int(block.block_pos.x), int(block.block_pos.y)
             self.tetris_matrix[x][y] = block
 
+
     def is_out_of_index(self, x, y):
+        """
+        Input: Tọa độ x, y. (tọa độ ma trận, không phải tọa độ pixel).
+        Process: Kiểm tra tọa độ input có hợp lệ trong ma trận không.
+        Ouput: Biến boolean.
+        """
         if 0 <= x < TETRIS_COLS and 0 <= y < TETRIS_HEIGHT:
             return False
         return True
 
+
     def is_game_over(self):
+        """
+        Input: Khối tetromino.
+        Process: Kiểm tra khối có nằm ngoài ma trận không.
+        Ouput: Biến boolean.
+        """
         for block in self.tetromino.blocks:
             x, y = int(block.block_pos.x), int(block.block_pos.y)
             if self.is_out_of_index(x ,y):
                 return True
         return False
 
+
     def draw_grid(self):
+        """
+        Input: Không.
+        Process: Vẽ lưới.
+        Ouput: Không.
+        """
         for x in range(TETRIS_COLS):
             for y in range(TETRIS_ROWS):
                 pg.draw.rect(self.tetris_surface, GREY, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
 
 
     def draw_background(self, pos):
+        """
+        Input: Không.
+        Process: Vẽ nền trong khung game.
+        Ouput: Không.
+        """
         self.tetris_surface.blit(self.tetris_background_image, pos)
 
 
     def draw_tetris_border(self, pos):
+        """
+        Input: Không.
+        Process: Vẽ khung cho khung game.
+        Ouput: Không.
+        """
         self.app.display_screen.blit(self.tetris_border_image, pos)
 
 
     def key_up_handle(self, release_key):
+        """
+        Input: Sự kiện bàn phím.
+        Process: Kiểm tra các phím mũi lên trái, phải, xuống có được thả ra không. Nếu có thì xử lý sự kiện.
+        Ouput: Không.
+        """
         if release_key == pg.K_LEFT:
             self.moving_left = False
         elif release_key == pg.K_RIGHT:
@@ -99,6 +173,11 @@ class Tetris():
 
 
     def key_down_handle(self, pressed_key):
+        """
+        Input: Sự kiện bàn phím.
+        Process: Kiểm tra các phím mũi lên trái, phải, xuống, z, x, c có được nhấn không. Nếu có thì xử lý sự kiện.
+        Ouput: Không.
+        """
         if pressed_key == pg.K_LEFT:
             self.moving_left = True
             self.moving_right = False
@@ -130,6 +209,11 @@ class Tetris():
 
 
     def hold_key_handle(self):
+        """
+        Input: Sự kiện bàn phím.
+        Process: Xử lý các sự kiện giữ phím.
+        Ouput: Không.
+        """
         if (self.moving_left or self.moving_right) and time.time() - self.last_move_sideways_time > MOVE_SIDEAWAYS_FREQUENCY:
             if self.moving_left:
                 self.tetromino.move('left')
@@ -143,12 +227,16 @@ class Tetris():
         
 
     def landed_tetromino_handle(self):
+        """
+        Input: Không.
+        Process: Xử lý sự kiện đáp đất của khối tetromino.
+        Ouput: Không.
+        """
         if self.tetromino.landing:
             if self.is_game_over():
                 self.draw_text_on_screen('Game Over')
                 self.__init__(self.app) # game over handle
             else:
-                self.play_sound('music/sound_effects/drop_sound.mp3')
                 self.put_tetromino_blocks_into_matrix()
                 removed_lines_num = self.removed_completed_lines()
                 self.calculate_score(removed_lines_num)
@@ -159,6 +247,11 @@ class Tetris():
 
 
     def is_completed_line(self, line):
+        """
+        Input: Không.
+        Process: Kiểm tra một dòng có được lấp đầy bởi các khối vuông không.
+        Ouput: Giá trị boolean
+        """
         for x in range(TETRIS_COLS):
             if not self.tetris_matrix[x][line]:
                 return False
@@ -166,6 +259,11 @@ class Tetris():
 
 
     def removed_completed_lines(self):
+        """
+        Input: Ma trận.
+        Process: Xóa các dòng được lấp đầy bởi các khối vuông.
+        Ouput: Không.
+        """
         line = TETRIS_ROWS - 1
         removed_lines_num = 0
         while line >= 0: 
@@ -182,17 +280,31 @@ class Tetris():
                 removed_lines_num += 1
             else:
                 line -= 1
+        if removed_lines_num > 0:
+            self.play_sound('music/sound_effects/normal_clear_line_sound.wav')
+        else:
+            self.play_sound('music/sound_effects/drop_sound.mp3')
         return removed_lines_num
 
 
     def calculate_score(self, removed_lines_num):
-            num = 0
-            for i in range(removed_lines_num):
-                num += i + 1
-            self.score += 100 * num
+        """
+        Input: Tổng số dòng đã xóa removed_lines_num.
+        Process: Thực hiện tính điểm và gán lại cho biến score.
+        Ouput: Không.
+        """
+        num = 0
+        for i in range(removed_lines_num):
+            num += i + 1
+        self.score += 100 * num
             
 
     def calculate_level(self):
+        """
+        Input: Số điểm hiện tại.
+        Process: Tính toán level và gán lại cho biến level.
+        Ouput: Không.
+        """
         score_step = 2000 
         score_temp = 0
         lv = 0
@@ -207,6 +319,11 @@ class Tetris():
 
 
     def calculate_fall_frequency(self):
+        """
+        Input: Level hiện tại.
+        Process: Tính toán chu kỳ rơi và gán lại cho biến fall_frequency.
+        Ouput: Không.
+        """
         if self.level > 1: # bắt đầu tính chu kỳ rơi từ level 2
             self.fall_frequency = ORIGINAL_FALL_FREQUENCY - (self.level * 0.075)
             if self.fall_frequency < 0.1:
@@ -214,6 +331,11 @@ class Tetris():
 
 
     def draw_tetromino_queue(self):
+        """
+        Input: Ảnh của hàng đợi.
+        Process: Vẽ hàng đợi.
+        Ouput: Không.
+        """
         tetromino_queue_background_image = self.load_image('images/background/tetromino_queue_background.png', 123, 550)
         self.tetromino_queue_surface.blit(tetromino_queue_background_image, (0, 0))
         tetronimo_queue_y = 73
@@ -224,6 +346,11 @@ class Tetris():
 
 
     def draw_score(self):
+        """
+        Input: Ảnh bảng điểm
+        Process: Vẽ bảng điểm
+        Ouput: Không.
+        """
         score_background_image = self.load_image('images/background/sign_0.png', 300, 175)
         pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
         score_text = pixel_font.render('SCORE', 1, 'white')
@@ -235,6 +362,11 @@ class Tetris():
 
 
     def draw_next_level(self):
+        """
+        Input: Ảnh bảng điểm để đặt level tiếp theo.
+        Process: Vẽ ảnh.
+        Ouput: Không.
+        """
         next_level_background_image = self.load_image('images/background/sign_0.png', 300, 175)
         pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
         next_level_text = pixel_font.render('NEXT   LV', 1, 'white')
@@ -246,6 +378,11 @@ class Tetris():
 
 
     def draw_level(self):
+        """
+        Input: Ảnh bảng level.
+        Process: Vẻ bảng level.
+        Ouput: Không.
+        """
         level_background_image = self.load_image('images/background/sign_0.png', 175, 175)
         pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
         level_text = pixel_font.render('LEVEL', 1, 'white')
@@ -257,6 +394,11 @@ class Tetris():
 
 
     def draw_speed(self):
+        """
+        Input: Ảnh bảng speed.
+        Process: Vẽ bảng speed.
+        Ouput: Không.
+        """
         speed_background_image = self.load_image('images/background/sign_0.png', 175, 175)
         pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
         speed_text = pixel_font.render('SPEED', 1, 'white')
@@ -268,6 +410,11 @@ class Tetris():
 
 
     def draw_text_on_screen(self, text):
+        """
+        Input: Một đoạn văn bản.
+        Process: Vẽ đoạn văn bản lên màn hình và chờ cho tới khi người dùng nhấn phím bất kỳ.
+        Ouput: Không.
+        """
         # Tạo text
         font_path = os.path.join(SOURCES_FILE_DIRECTORY, 'fonts/PixelatedRegular.ttf')
         pixel_font = pg.font.Font(font_path, 100)
@@ -291,6 +438,11 @@ class Tetris():
 
 
     def is_pressed(self):
+        """
+        Input: Sự kiện bàn phím.
+        Process: Kiểm tra người dùng có nhấn bất kỳ phím nào không.
+        Ouput: Giá trị boolean.
+        """
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 self.app.terminate_program()
@@ -300,13 +452,23 @@ class Tetris():
 
 
     def play_sound(self, sound_path):
+        """
+        Input: Đường dẫn file âm thanh.
+        Process: Play âm thanh.
+        Ouput: Không.
+        """
         sound_path = os.path.join(SOURCES_FILE_DIRECTORY, sound_path)
         sound_to_play = pg.mixer.Sound(sound_path)
         sound_to_play.play()
 
 
-
     def update(self):
+        """
+        Input: Không.
+        Process: Update trạng thái tetromino, xử lý sự kiện giữ phím, xử lý sự kiện đáp đất của khối tetromino, cập nhật trạng thái
+        của các khối vuông trong group.
+        Ouput: Không.
+        """
         self.tetromino.update()
         self.hold_key_handle()
         self.landed_tetromino_handle()
@@ -314,6 +476,11 @@ class Tetris():
 
 
     def draw(self):
+        """
+        Input: Không.
+        Process: Vẽ hình nền, hàng đợi, các khối vuông, điểm, level, điểm để đạt level kế tiếp, tốc độ rơi hiện tại của khối tetromino.
+        Ouput: Không.
+        """
         self.draw_background(vector(0, 0))
         #self.draw_grid()
         self.draw_tetromino_queue()

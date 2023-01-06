@@ -17,9 +17,3 @@ from game_settings import *
 #             print('a is pressed')
 
 #     pg.display.flip()
-
-vec_a = vector(5, 7)
-vec_b = vec_a
-vec_b = vector(9, 7)
-print(vec_a)
-print(vec_b)

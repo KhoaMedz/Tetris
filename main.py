@@ -1,6 +1,11 @@
 from app import *
 
 def main():
+    """
+        Input: Không.
+        Process: Chạy game.
+        Ouput: Không.
+    """
     app = App()
     app.run()
 
