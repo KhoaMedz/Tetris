@@ -117,3 +117,10 @@ class Block(pg.sprite.Sprite):
         Ouput: Không.
         """
         pg.draw.rect(surface, WHITE, (coordinate_X, coordinate_Y, block_size, block_size))
+
+
+    def draw_block_image(self, surface, image_path, coordinate_X, coordinate_Y, image_size_width, image_size_height):
+        block_image = self.tetromino.tetris.load_image(image_path, image_size_width, image_size_height)
+        surface.blit(block_image, (coordinate_X, coordinate_Y))
+
+    

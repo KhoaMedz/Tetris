@@ -106,6 +106,16 @@ class Tetromino():
         self.landing = True
 
 
+    def draw_future_landing_postion(self):
+            for i in range(1, TETRIS_HEIGHT):
+                new_tetromino_pos = [block.block_pos + (0, i) for block in self.blocks]
+                if self.is_collide(new_tetromino_pos):
+                    break
+            future_landing_core_pos = self.core_pos + (0, i - 1)
+            x, y = int(future_landing_core_pos.x), int(future_landing_core_pos.y)
+            self.draw_piece_with_image(self.tetris.tetris_surface, 'images/blocks/empty_block.png', BLOCK_SIZE, x, y)            
+
+
     def update(self):
         """
         Input: Không.
@@ -130,3 +140,13 @@ class Tetromino():
                         coor_to_draw_X = (x * block_size) +  core_pos_X
                         coor_to_draw_Y = (y * block_size) + core_pos_Y
                         Block.draw_block(self.blocks[0], surface, coor_to_draw_X, coor_to_draw_Y, block_size)
+
+    
+    def draw_piece_with_image(self, surface, image_path, block_size, core_pos_X = 0, core_pos_Y = 0): # core_pos của hàm này là tọa độ ma trận ko phải tọa độ thực (tọa độ pixel)
+        tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
+        for x in range(5):
+                for y in range(5):
+                    if  tetromino_shape[y][x] == 'o':
+                        coor_to_draw_X = (x + core_pos_X) * block_size
+                        coor_to_draw_Y = (y + core_pos_Y) * block_size
+                        Block.draw_block_image(self.blocks[0], surface, image_path, coor_to_draw_X, coor_to_draw_Y, BLOCK_SIZE_FUTURE_SHADOW , BLOCK_SIZE_FUTURE_SHADOW )

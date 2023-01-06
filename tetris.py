@@ -484,6 +484,7 @@ class Tetris():
         self.draw_background(vector(0, 0))
         #self.draw_grid()
         self.draw_tetromino_queue()
+        self.tetromino.draw_future_landing_postion()
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
         self.draw_score()
         self.draw_next_level()
