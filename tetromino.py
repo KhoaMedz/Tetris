@@ -150,7 +150,6 @@ class Tetromino():
 
     
     # Chỉ dùng để vẽ bóng đổ cho tetromino
-    
     def draw_tetromino_with_image(self, surface, image_path, block_size, core_pos_X = 0, core_pos_Y = 0): # core_pos của hàm này là tọa độ ma trận ko phải tọa độ thực (tọa độ pixel)
         """
         Input: Surface, đường dẫn ảnh, kích thước khối vuông, tọa độ gốc x, y (Tọa độ pixel, không phải tọa độ trên ma trận).
@@ -164,3 +163,13 @@ class Tetromino():
                         coor_to_draw_X = (x + core_pos_X) * block_size
                         coor_to_draw_Y = (y + core_pos_Y) * block_size
                         Block.draw_block_image(self.blocks[0], surface, image_path, coor_to_draw_X, coor_to_draw_Y, BLOCK_SIZE_FUTURE_SHADOW , BLOCK_SIZE_FUTURE_SHADOW )
+
+
+    def draw_tetromino_current_hold(self, surface, block_size, core_pos_X = 0, core_pos_Y = 0): # core_pos của hàm này là tọa độ thực (dựa theo resolution), ko phải tọa độ trong matrix
+        tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
+        for x in range(5):
+                for y in range(5):
+                    if  tetromino_shape[y][x] == 'o':
+                        coor_to_draw_X = (x * block_size) + core_pos_X
+                        coor_to_draw_Y = (y * block_size) + core_pos_Y
+                        Block.draw_block_image_for_current_hold(self.blocks[0], surface, coor_to_draw_X, coor_to_draw_Y, block_size , block_size)

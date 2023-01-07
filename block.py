@@ -117,7 +117,7 @@ class Block(pg.sprite.Sprite):
         Process: Vẽ ra một khối vuông vào surface được truyền vào.
         Ouput: Không.
         """
-        pg.draw.rect(surface, WHITE, (coordinate_X, coordinate_Y, block_size, block_size))
+        pg.draw.rect(surface, DARK_ORANGE, (coordinate_X, coordinate_Y, block_size, block_size))
 
 
     # Chỉ dùng để vẽ bóng đổ cho tetromino
@@ -129,6 +129,11 @@ class Block(pg.sprite.Sprite):
         """
         block_image = self.tetromino.tetris.load_image(image_path, image_size_width, image_size_height)
         block_image.set_alpha(150)
+        surface.blit(block_image, (coordinate_X, coordinate_Y))
+
+
+    def draw_block_image_for_current_hold(self, surface, coordinate_X, coordinate_Y, image_size_width, image_size_height):
+        block_image = pg.transform.scale(self.tetromino.image, (image_size_width, image_size_height))
         surface.blit(block_image, (coordinate_X, coordinate_Y))
 
     

@@ -18,6 +18,7 @@ class Tetris():
         self.level_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
         self.speed_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
         self.tetromino_queue_surface = pg.Surface((123, 550), pg.SRCALPHA, 32).convert_alpha()
+        self.tetromino_current_hold_surface = pg.Surface((250, 415), pg.SRCALPHA, 32).convert_alpha()
         self.tetris_background_image = self.load_image('images/background/tetris_background.png', TETRIS_WIDTH, TETRIS_HEIGHT)
         self.tetris_border_image = self.load_image('images/background/tetris_border.png', TETRIS_WIDTH + 40, TETRIS_HEIGHT + 118)
         self.create_last_action_time()
@@ -350,6 +351,13 @@ class Tetris():
         self.app.display_screen.blit(self.tetromino_queue_surface, (TETROMINO_QUEUE_SURFACE_POS))
 
 
+    def draw_tetromino_current_hold(self):
+        tetromino_current_hold_image = self.load_image('images/background/gameboy3.png', 250, 415)
+        self.tetromino_current_hold_surface.blit(tetromino_current_hold_image, (0, 0))
+        self.tetromino.draw_tetromino_current_hold(self.tetromino_current_hold_surface, 25, 65, 72)
+        self.app.display_screen.blit(self.tetromino_current_hold_surface, TETROMINO_CURRENT_HOLD_SURFACE_POS)
+
+
     def draw_score(self):
         """
         Input: Ảnh bảng điểm
@@ -520,6 +528,7 @@ class Tetris():
         """
         self.draw_background(vector(0, 0))
         #self.draw_grid()
+        self.draw_tetromino_current_hold()
         self.draw_tetromino_queue()
         self.tetromino.draw_tetromino_drop_shadow()
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
