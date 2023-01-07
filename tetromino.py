@@ -103,6 +103,7 @@ class Tetromino():
             block.block_pos += (0, i - 1)
             block.set_rect_topleft() #Sau khi đáp đất thì cập nhật ngay tọa độ của rect để group vẽ (do nếu rơi vào trường hợp game over thì vẫn có thể vẽ khối này)
             self.tetris.sprites_group.draw(self.tetris.tetris_surface) #Vẽ
+        self.tetris.counter = 0
         self.landing = True
 
 

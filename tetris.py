@@ -25,6 +25,10 @@ class Tetris():
         self.create_tetris_matrix()
         self.create_tetromino_queue()
         self.create_score_attributes()
+        self.tetris_surface_pos = vector(TETRIS_SURFACE_POS)
+        self.tetris_border_pos = vector(DRAW_TETRIS_BORDER_POS)
+        self.tetris_surface_move_direction = 'down' # Biến dùng để điều khiển hướng của hiệu ứng rung động.
+        self.counter = -1 # Biến đếm để chạy hiệu ứng rung động khi dùng chức năng rơi khối tetromino ngay lập tức.
 
         
     def create_last_action_time(self):
@@ -197,10 +201,11 @@ class Tetris():
         elif pressed_key == pg.K_x: # Xoay ngược chiều kim đồng hồ
             self.tetromino.rotate(-1)
         elif pressed_key == pg.K_c:
-            self.moving_left = False
-            self.moving_right = False
-            self.moving_down = False
-            self.tetromino.move_all_the_way_down()
+            if self.counter == -1: # Nếu counter != -1 nghĩa là hiệu ứng rung động đang diễn ra, không thể thực hiện chức năng rơi xuống lập tức được.
+                self.moving_left = False
+                self.moving_right = False
+                self.moving_down = False
+                self.tetromino.move_all_the_way_down()
         elif pressed_key == pg.K_p:
             self.draw_text_on_screen('PAUSE')
             self.last_fall_down_time = time.time()
@@ -430,8 +435,8 @@ class Tetris():
         self.tetris_surface.blit(text_surface, text_rect)
         self.tetris_surface.blit(text_surface_2, text_2_rect)
         # Vẽ tetris surface lên main surface
-        self.app.display_screen.blit(self.tetris_surface, TETRIS_SURFACE_POS)
-        self.draw_tetris_border(TETRIS_SURFACE_POS + (-19, -87)) # Vẽ khung lên main surface (display_screen)
+        self.app.display_screen.blit(self.tetris_surface, self.tetris_surface_pos)
+        self.draw_tetris_border(self.tetris_border_pos) # Vẽ khung lên main surface (display_screen)
         while not self.is_pressed():
             pg.display.flip()
             self.app.fps_clock.tick()
@@ -462,6 +467,37 @@ class Tetris():
         sound_to_play.play()
 
 
+    def change_tetris_surface_position(self):
+        """
+        Input: Không.
+        Process: Thay đổi tọa độ của tetris surface và tetris's border.
+        Ouput: Không.
+        """
+        if self.tetris_surface_move_direction == 'down':
+            self.tetris_surface_pos += (0, 5)
+            self.tetris_border_pos += (0, 5)
+            if self.tetris_surface_pos == TETRIS_SURFACE_POS + (0, 15):
+                self.tetris_surface_move_direction = 'up'
+        elif self.tetris_surface_move_direction == 'up':
+            self.tetris_surface_pos -= (0, 5)
+            self.tetris_border_pos -= (0, 5)
+            if self.tetris_surface_pos == TETRIS_SURFACE_POS:
+                self.tetris_surface_move_direction = 'down'
+
+
+    def tetris_surface_vibration_handling(self):
+        """
+        Input: Không.
+        Process: Chạy hiệu ứng rung động khi sử dụng chức năng rơi khối tetromino ngay lập tức.
+        Ouput: Không.
+        """
+        if self.counter != -1:
+            self.change_tetris_surface_position()
+            if self.counter == 5:
+                self.counter = -2
+            self.counter += 1
+
+
     def update(self):
         """
         Input: Không.
@@ -472,6 +508,7 @@ class Tetris():
         self.tetromino.update()
         self.hold_key_handle()
         self.landed_tetromino_handle()
+        self.tetris_surface_vibration_handling()
         self.sprites_group.update()
 
 

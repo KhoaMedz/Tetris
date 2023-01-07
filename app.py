@@ -76,6 +76,7 @@ class App():
         """
         self.display_screen.blit(self.background_image, (0, 0))
 
+
     def update(self):
         """
         Input: Không.
@@ -94,8 +95,8 @@ class App():
         """
         self.draw_main_background()
         self.tetris.draw()
-        self.display_screen.blit(self.tetris.tetris_surface, TETRIS_SURFACE_POS)
-        self.tetris.draw_tetris_border(TETRIS_SURFACE_POS + (-19, -87))
+        self.display_screen.blit(self.tetris.tetris_surface, self.tetris.tetris_surface_pos)
+        self.tetris.draw_tetris_border(self.tetris.tetris_border_pos)
         pg.display.flip()
         self.fps_clock.tick(FPS)
 
