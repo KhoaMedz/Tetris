@@ -110,6 +110,7 @@ class Block(pg.sprite.Sprite):
         self.is_alive()
 
 
+    # Chỉ dùng để vẽ hàng chờ tetromino
     def draw_block(self, surface, coordinate_X, coordinate_Y, block_size):
         """
         Input: Surface, tọa độ x, y (tọa độ pixel, không phải tọa độ trên ma trận), kích thước khối vuông.
@@ -119,8 +120,15 @@ class Block(pg.sprite.Sprite):
         pg.draw.rect(surface, WHITE, (coordinate_X, coordinate_Y, block_size, block_size))
 
 
+    # Chỉ dùng để vẽ bóng đổ cho tetromino
     def draw_block_image(self, surface, image_path, coordinate_X, coordinate_Y, image_size_width, image_size_height):
+        """
+        Input: Surface, đường dẫn ảnh, tọa độ x, y (tọa độ pixel, không phải tọa độ trên ma trận), chiều rộng ảnh, chiều cao ảnh.
+        Process: Vẽ ra hình ảnh đã được làm mờ của một khối vuông.
+        Ouput: Không.
+        """
         block_image = self.tetromino.tetris.load_image(image_path, image_size_width, image_size_height)
+        block_image.set_alpha(150)
         surface.blit(block_image, (coordinate_X, coordinate_Y))
 
     

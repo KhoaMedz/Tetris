@@ -106,14 +106,19 @@ class Tetromino():
         self.landing = True
 
 
-    def draw_future_landing_postion(self):
-            for i in range(1, TETRIS_HEIGHT):
-                new_tetromino_pos = [block.block_pos + (0, i) for block in self.blocks]
-                if self.is_collide(new_tetromino_pos):
-                    break
-            future_landing_core_pos = self.core_pos + (0, i - 1)
-            x, y = int(future_landing_core_pos.x), int(future_landing_core_pos.y)
-            self.draw_piece_with_image(self.tetris.tetris_surface, 'images/blocks/empty_block.png', BLOCK_SIZE, x, y)            
+    def draw_tetromino_drop_shadow(self):
+        """
+        Input: Không
+        Process: Tính toán tọa độ khi đáp đất của khối tetromino hiện tại, sau đó vẽ ra bóng của khối tetromino (Tức lúc này khối tetromino vẫn chưa đáp đất, chỉ vẽ ảnh trong tương lai).
+        Ouput: Không.
+        """
+        for i in range(1, TETRIS_HEIGHT):
+            new_tetromino_pos = [block.block_pos + (0, i) for block in self.blocks]
+            if self.is_collide(new_tetromino_pos):
+                break
+        future_landing_core_pos = self.core_pos + (0, i - 1)
+        x, y = int(future_landing_core_pos.x), int(future_landing_core_pos.y)
+        self.draw_tetromino_with_image(self.tetris.tetris_surface, 'images/blocks/empty_block.png', BLOCK_SIZE, x, y)            
 
 
     def update(self):
@@ -127,7 +132,8 @@ class Tetromino():
             self.tetris.last_fall_down_time = time.time()
 
 
-    def draw_piece(self, surface, block_size, core_pos_X = 0, core_pos_Y = 0): # core_pos của hàm này là tọa độ thực (dựa theo resolution), ko phải tọa độ trong matrix
+    # Chỉ dùng để vẽ hàng chờ tetromino
+    def draw_tetromino(self, surface, block_size, core_pos_X = 0, core_pos_Y = 0): # core_pos của hàm này là tọa độ thực (dựa theo resolution), ko phải tọa độ trong matrix
         """
         Input: Surface, kích thước khối vuông, tọa độ gốc x, y (Tọa độ pixel, không phải tọa độ trên ma trận).
         Process: Vẽ khối tetromino dựa vào tọa độ truyền vào.
@@ -142,7 +148,14 @@ class Tetromino():
                         Block.draw_block(self.blocks[0], surface, coor_to_draw_X, coor_to_draw_Y, block_size)
 
     
-    def draw_piece_with_image(self, surface, image_path, block_size, core_pos_X = 0, core_pos_Y = 0): # core_pos của hàm này là tọa độ ma trận ko phải tọa độ thực (tọa độ pixel)
+    # Chỉ dùng để vẽ bóng đổ cho tetromino
+    
+    def draw_tetromino_with_image(self, surface, image_path, block_size, core_pos_X = 0, core_pos_Y = 0): # core_pos của hàm này là tọa độ ma trận ko phải tọa độ thực (tọa độ pixel)
+        """
+        Input: Surface, đường dẫn ảnh, kích thước khối vuông, tọa độ gốc x, y (Tọa độ pixel, không phải tọa độ trên ma trận).
+        Process: Vẽ khối tetromino bằng hình ảnh dựa vào tọa độ truyền vào.
+        Ouput: Không.
+        """
         tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
         for x in range(5):
                 for y in range(5):

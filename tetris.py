@@ -340,7 +340,7 @@ class Tetris():
         self.tetromino_queue_surface.blit(tetromino_queue_background_image, (0, 0))
         tetronimo_queue_y = 73
         for tetromino in self.tetromino_queue.queue:
-            tetromino.draw_piece(self.tetromino_queue_surface, TETROMINO_QUEUE_BLOCK_SIZE, 29, tetronimo_queue_y)
+            tetromino.draw_tetromino(self.tetromino_queue_surface, TETROMINO_QUEUE_BLOCK_SIZE, 29, tetronimo_queue_y)
             tetronimo_queue_y += 129
         self.app.display_screen.blit(self.tetromino_queue_surface, (TETROMINO_QUEUE_SURFACE_POS))
 
@@ -478,13 +478,13 @@ class Tetris():
     def draw(self):
         """
         Input: Không.
-        Process: Vẽ hình nền, hàng đợi, các khối vuông, điểm, level, điểm để đạt level kế tiếp, tốc độ rơi hiện tại của khối tetromino.
+        Process: Vẽ hình nền, hàng đợi, bóng tetromino, các khối vuông, điểm, level, điểm để đạt level kế tiếp, tốc độ rơi hiện tại của khối tetromino.
         Ouput: Không.
         """
         self.draw_background(vector(0, 0))
         #self.draw_grid()
         self.draw_tetromino_queue()
-        self.tetromino.draw_future_landing_postion()
+        self.tetromino.draw_tetromino_drop_shadow()
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
         self.draw_score()
         self.draw_next_level()
