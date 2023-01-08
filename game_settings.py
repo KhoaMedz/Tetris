@@ -48,6 +48,10 @@ FONT_SIZE_SCORE = 50
 # Lấy thư mục hiện tại đang chứa file này
 SOURCES_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
+# Hướng di chuyển
+MOVE_DIRECTIONS = {'left': vector(-1, 0),
+             'right': vector(1, 0),
+             'down': vector(0, 1)}
 
 # Tetromino's Shape
 SHAPE_TEMPLATE_COLS = 5
@@ -166,6 +170,120 @@ O_TEMP = [['.....',
            '..oo.',
            '.....']]
 
+DOT_TEMP = [['.....',
+             '.....',
+             '..o..',
+             '.....',
+             '.....']]
+
+
+SMALL_L_TEMP = [['.....',
+                 '..o..',
+                 '.oo..',
+                 '.....',
+                 '.....'],
+
+                ['.....',
+                 '..o..',
+                 '..oo.',
+                 '.....',
+                 '.....'],
+   
+                ['.....',
+                 '.....',
+                 '..oo.',
+                 '..o..',
+                 '.....'],
+   
+                ['.....',
+                 '.....',
+                 '.oo..',
+                 '..o..',
+                 '.....']]
+
+
+SMALL_I_TEMP = [['.....',
+                 '..o..',
+                 '..o..',
+                 '.....',
+                 '.....'],   
+
+                ['.....',
+                 '.....',
+                 '.oo..',
+                 '.....',
+                 '.....']]
+
+
+CROSS_TEMP = [['.....',
+               '.o...',
+               '..o..',
+               '.....',
+               '.....'],
+
+              ['.....',
+               '...o.',
+               '..o..',
+               '.....',
+               '.....']]
+
+
+PLUS_TEMP = [['.....',
+              '..o..',
+              '.ooo.',
+              '..o..',
+              '.....']]
+
+
+V_TEMP =  [['.....',
+            '.o.o.',
+            '..o..',
+            '.....',
+            '.....'],
+
+           ['.....',
+            '...o.',
+            '..o..',
+            '...o.',
+            '.....'],
+   
+           ['.....',
+            '.....',
+            '..o..',
+            '.o.o.',
+            '.....'],
+   
+           ['.....',
+            '.o...',
+            '..o..',
+            '.o...',
+            '.....']]
+
+
+BOAT_TEMP =  [['.....',
+               '.o.o.',
+               '.ooo.',
+               '.....',
+               '.....'],
+   
+              ['.....',
+               '..oo.',
+               '..o..',
+               '..oo.',
+               '.....'],
+      
+              ['.....',
+               '.....',
+               '.ooo.',
+               '.o.o.',
+               '.....'],
+      
+              ['.....',
+               '.oo..',
+               '..o..',
+               '.oo..',
+               '.....']]
+
 
 TETROMINOS = {'I': I_TEMP,
               'L': L_TEMP,
@@ -173,13 +291,14 @@ TETROMINOS = {'I': I_TEMP,
               'S': S_TEMP,
               'Z': Z_TEMP,
               'T': T_TEMP,
-              'O': O_TEMP}
-
-
-# Hướng di chuyển
-MOVE_DIRECTIONS = {'left': vector(-1, 0),
-             'right': vector(1, 0),
-             'down': vector(0, 1)}
+              'O': O_TEMP,
+              'DOT': DOT_TEMP,
+              'SMALL_L': SMALL_L_TEMP,
+              'SMALL_I': SMALL_I_TEMP,
+              'CROSS': CROSS_TEMP,
+              'PLUS': PLUS_TEMP,
+              'V': V_TEMP,
+              'BOAT': BOAT_TEMP}
 
 
 # Số hiệu ảnh theo hình khối tetromino
@@ -189,4 +308,13 @@ TETROMINOS_IMAGE_NUMBER = {'I': 0,
                            'S': 3,
                            'Z': 4,
                            'T': 5,
-                           'O': 6}
+                           'O': 6,
+                           'DOT': 7,
+                           'SMALL_L': 8,
+                           'SMALL_I': 9,
+                           'CROSS': 10,
+                           'PLUS': 11,
+                           'V': 12,
+                           'BOAT': 13}
+
+
