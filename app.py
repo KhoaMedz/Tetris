@@ -64,7 +64,7 @@ class App():
         Ouput: Trả về ảnh đã scale
         """
         # Nối tên file với thư mục chứa mã nguồn, để load ảnh ko bị lỗi
-        image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'images/background/main_background.png')
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'assets/images/background/main_background.png')
         return pg.transform.scale(pg.image.load(image_path), (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 

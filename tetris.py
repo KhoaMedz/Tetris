@@ -19,8 +19,8 @@ class Tetris():
         self.speed_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
         self.tetromino_queue_surface = pg.Surface((123, 550), pg.SRCALPHA, 32).convert_alpha()
         self.tetromino_current_hold_surface = pg.Surface((250, 415), pg.SRCALPHA, 32).convert_alpha()
-        self.tetris_background_image = self.load_image('images/background/tetris_background.png', TETRIS_WIDTH, TETRIS_HEIGHT)
-        self.tetris_border_image = self.load_image('images/background/tetris_border.png', TETRIS_WIDTH + 40, TETRIS_HEIGHT + 118)
+        self.tetris_background_image = self.load_image('assets/images/background/tetris_background.png', TETRIS_WIDTH, TETRIS_HEIGHT)
+        self.tetris_border_image = self.load_image('assets/images/background/tetris_border.png', TETRIS_WIDTH + 40, TETRIS_HEIGHT + 118)
         self.create_last_action_time()
         self.create_moving_action()
         self.create_tetris_matrix()
@@ -287,9 +287,9 @@ class Tetris():
             else:
                 line -= 1
         if removed_lines_num > 0:
-            self.play_sound('music/sound_effects/normal_clear_line_sound.wav')
+            self.play_sound('assets/music/sound_effects/normal_clear_line_sound.wav')
         else:
-            self.play_sound('music/sound_effects/drop_sound.mp3')
+            self.play_sound('assets/music/sound_effects/drop_sound.mp3')
         return removed_lines_num
 
 
@@ -342,7 +342,7 @@ class Tetris():
         Process: Vẽ hàng đợi.
         Ouput: Không.
         """
-        tetromino_queue_background_image = self.load_image('images/background/tetromino_queue_background.png', 123, 550)
+        tetromino_queue_background_image = self.load_image('assets/images/background/tetromino_queue_background.png', 123, 550)
         self.tetromino_queue_surface.blit(tetromino_queue_background_image, (0, 0))
         tetronimo_queue_y = 73
         for tetromino in self.tetromino_queue.queue:
@@ -352,7 +352,7 @@ class Tetris():
 
 
     def draw_tetromino_current_hold(self):
-        tetromino_current_hold_image = self.load_image('images/background/gameboy3.png', 250, 415)
+        tetromino_current_hold_image = self.load_image('assets/images/background/gameboy.png', 250, 415)
         self.tetromino_current_hold_surface.blit(tetromino_current_hold_image, (0, 0))
         self.tetromino.draw_tetromino_current_hold(self.tetromino_current_hold_surface, 25, 65, 72)
         self.app.display_screen.blit(self.tetromino_current_hold_surface, TETROMINO_CURRENT_HOLD_SURFACE_POS)
@@ -364,8 +364,8 @@ class Tetris():
         Process: Vẽ bảng điểm
         Ouput: Không.
         """
-        score_background_image = self.load_image('images/background/sign_0.png', 300, 175)
-        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        score_background_image = self.load_image('assets/images/background/sign_0.png', 300, 175)
+        pixel_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
         score_text = pixel_font.render('SCORE', 1, 'white')
         score_number_text = pixel_font.render(str(self.score), 1, 'white')
         self.score_surface.blit(score_background_image, (0, 0))
@@ -380,8 +380,8 @@ class Tetris():
         Process: Vẽ ảnh.
         Ouput: Không.
         """
-        next_level_background_image = self.load_image('images/background/sign_0.png', 300, 175)
-        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        next_level_background_image = self.load_image('assets/images/background/sign_0.png', 300, 175)
+        pixel_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
         next_level_text = pixel_font.render('NEXT   LV', 1, 'white')
         next_level_number_text = pixel_font.render(str(self.score_to_reach_next_level), 1, 'white')
         self.next_level_surface.blit(next_level_background_image, (0, 0))
@@ -396,8 +396,8 @@ class Tetris():
         Process: Vẻ bảng level.
         Ouput: Không.
         """
-        level_background_image = self.load_image('images/background/sign_0.png', 175, 175)
-        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        level_background_image = self.load_image('assets/images/background/sign_0.png', 175, 175)
+        pixel_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
         level_text = pixel_font.render('LEVEL', 1, 'white')
         level_number_text = pixel_font.render(str(self.level), 1, 'white')
         self.level_surface.blit(level_background_image, (0, 0))
@@ -412,8 +412,8 @@ class Tetris():
         Process: Vẽ bảng speed.
         Ouput: Không.
         """
-        speed_background_image = self.load_image('images/background/sign_0.png', 175, 175)
-        pixel_font = pg.font.Font('fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        speed_background_image = self.load_image('assets/images/background/sign_0.png', 175, 175)
+        pixel_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
         speed_text = pixel_font.render('SPEED', 1, 'white')
         speed_number_text = pixel_font.render(f'drop/{str(self.fall_frequency)} s', 1, 'white')
         self.speed_surface.blit(speed_background_image, (0, 0))
@@ -429,7 +429,7 @@ class Tetris():
         Ouput: Không.
         """
         # Tạo text
-        font_path = os.path.join(SOURCES_FILE_DIRECTORY, 'fonts/PixelatedRegular.ttf')
+        font_path = os.path.join(SOURCES_FILE_DIRECTORY, 'assets/fonts/PixelatedRegular.ttf')
         pixel_font = pg.font.Font(font_path, 100)
         text_surface = pixel_font.render(text, 1, 'red')
         text_rect = text_surface.get_rect()

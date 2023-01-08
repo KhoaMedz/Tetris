@@ -32,7 +32,7 @@ class Tetromino():
             for y in range(SHAPE_TEMPLATE_ROWS):
                 if tetromino_shape[y][x] == 'o':
                     blocks_pos.append(vector(x, y) + self.core_pos)
-        image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'images/blocks/block_{TETROMINOS_IMAGE_NUMBER[self.tetromino_name]}.png')
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'assets/images/blocks/block_{TETROMINOS_IMAGE_NUMBER[self.tetromino_name]}.png')
         self.image = pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE))
         self.blocks = [Block(self, pos) for pos in blocks_pos]
 
@@ -81,10 +81,10 @@ class Tetromino():
                 if tetromino_shape[y][x] == 'o':
                     list_new_pos.append(vector(x, y) + self.core_pos)
         if self.is_collide(list_new_pos):
-            self.tetris.play_sound('music/sound_effects/blocking_sound.mp3')
+            self.tetris.play_sound('assets/music/sound_effects/blocking_sound.mp3')
             self.tetromino_rotation = (self.tetromino_rotation - rotation_direction) % len(TETROMINOS[self.tetromino_name])
         else:
-            self.tetris.play_sound('music/sound_effects/rotate_sound.wav')
+            self.tetris.play_sound('assets/music/sound_effects/rotate_sound.wav')
             for i in range(len(self.blocks)):
                 self.blocks[i].set_block_pos(list_new_pos[i])
         
@@ -119,7 +119,7 @@ class Tetromino():
                 break
         future_landing_core_pos = self.core_pos + (0, i - 1)
         x, y = int(future_landing_core_pos.x), int(future_landing_core_pos.y)
-        self.draw_tetromino_with_image(self.tetris.tetris_surface, 'images/blocks/empty_block.png', BLOCK_SIZE, x, y)            
+        self.draw_tetromino_with_image(self.tetris.tetris_surface, 'assets/images/blocks/empty_block.png', BLOCK_SIZE, x, y)            
 
 
     def update(self):

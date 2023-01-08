@@ -24,7 +24,7 @@ class Block(pg.sprite.Sprite):
         Ouput: Không.
         """
         img_index = random.randint(0, 16)
-        image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'images/effect/star_{img_index}.png')
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'assets/images/effect/star_{img_index}.png')
         self.sfx_image = pg.image.load(image_path).convert_alpha()
         # self.sfx_image.set_alpha(160)
         self.sfx_speed = random.uniform(0.1, 0.8)
