@@ -19,6 +19,7 @@ class Tetris():
         self.speed_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
         self.tetromino_queue_surface = pg.Surface((123, 550), pg.SRCALPHA, 32).convert_alpha()
         self.tetromino_current_hold_surface = pg.Surface((250, 415), pg.SRCALPHA, 32).convert_alpha()
+        self.logo_surface = pg.Surface((300, 175), pg.SRCALPHA, 32).convert_alpha()
         self.tetris_background_image = self.load_image('assets/images/background/tetris_background.png', TETRIS_WIDTH, TETRIS_HEIGHT)
         self.tetris_border_image = self.load_image('assets/images/background/tetris_border.png', TETRIS_WIDTH + 40, TETRIS_HEIGHT + 118)
         self.create_last_action_time()
@@ -365,9 +366,10 @@ class Tetris():
         Ouput: Không.
         """
         score_background_image = self.load_image('assets/images/background/sign_0.png', 300, 175)
-        pixel_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
-        score_text = pixel_font.render('SCORE', 1, 'white')
-        score_number_text = pixel_font.render(str(self.score), 1, 'white')
+        pixelated_regular_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        round9x13_font = pg.font.Font('assets/fonts/Round9x13.ttf', FONT_SIZE_SCORE)
+        score_text = pixelated_regular_font.render('SCORE', 1, 'white')
+        score_number_text = round9x13_font.render(str(self.score), 1, 'white')
         self.score_surface.blit(score_background_image, (0, 0))
         self.score_surface.blit(score_text, (100, 20))
         self.score_surface.blit(score_number_text, (70, 100))
@@ -381,9 +383,11 @@ class Tetris():
         Ouput: Không.
         """
         next_level_background_image = self.load_image('assets/images/background/sign_0.png', 300, 175)
-        pixel_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
-        next_level_text = pixel_font.render('NEXT   LV', 1, 'white')
-        next_level_number_text = pixel_font.render(str(self.score_to_reach_next_level), 1, 'white')
+        pixelated_regular_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        round9x13_font = pg.font.Font('assets/fonts/Round9x13.ttf', FONT_SIZE_SCORE)
+
+        next_level_text = pixelated_regular_font.render('NEXT   LV', 1, 'white')
+        next_level_number_text = round9x13_font.render(str(self.score_to_reach_next_level), 1, 'white')
         self.next_level_surface.blit(next_level_background_image, (0, 0))
         self.next_level_surface.blit(next_level_text, (80, 20))
         self.next_level_surface.blit(next_level_number_text, (70, 100))
@@ -397,9 +401,10 @@ class Tetris():
         Ouput: Không.
         """
         level_background_image = self.load_image('assets/images/background/sign_0.png', 175, 175)
-        pixel_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
-        level_text = pixel_font.render('LEVEL', 1, 'white')
-        level_number_text = pixel_font.render(str(self.level), 1, 'white')
+        pixelated_regular_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        round9x13_font = pg.font.Font('assets/fonts/Round9x13.ttf', FONT_SIZE_SCORE)
+        level_text = pixelated_regular_font.render('LEVEL', 1, 'white')
+        level_number_text = round9x13_font.render(str(self.level), 1, 'white')
         self.level_surface.blit(level_background_image, (0, 0))
         self.level_surface.blit(level_text, (42, 20))
         self.level_surface.blit(level_number_text, (50, 100))
@@ -413,13 +418,28 @@ class Tetris():
         Ouput: Không.
         """
         speed_background_image = self.load_image('assets/images/background/sign_0.png', 175, 175)
-        pixel_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
-        speed_text = pixel_font.render('SPEED', 1, 'white')
-        speed_number_text = pixel_font.render(f'drop/{str(self.fall_frequency)} s', 1, 'white')
+        pixelated_regular_font = pg.font.Font('assets/fonts/PixelatedRegular.ttf', FONT_SIZE_SCORE)
+        round9x13_font = pg.font.Font('assets/fonts/Round9x13.ttf', 30)
+        speed_text = pixelated_regular_font.render('SPEED', 1, 'white')
+        speed_number_text = round9x13_font.render(f'{str(round(self.fall_frequency, 2))}  (s)', 1, 'white')
         self.speed_surface.blit(speed_background_image, (0, 0))
         self.speed_surface.blit(speed_text, (42, 20))
-        self.speed_surface.blit(speed_number_text, (20, 100))
+        self.speed_surface.blit(speed_number_text, (32, 100))
         self.app.display_screen.blit(self.speed_surface, (DRAW_SPEED_POS))
+
+
+    def draw_logo(self):
+        """
+        Input: Ảnh nền bảng logo, font.
+        Process: Vẽ logo.
+        Ouput: Không.
+        """
+        logo_background_image = self.load_image('assets/images/background/logo_background.png', 300, 175)
+        thaleahfat_font = pg.font.Font('assets/fonts/ThaleahFat.ttf', FONT_SIZE_LOGO)
+        logo_text = thaleahfat_font.render('tetris', 1, 'white')
+        self.logo_surface.blit(logo_background_image, (0, 0))
+        self.logo_surface.blit(logo_text, (100, 80))
+        self.app.display_screen.blit(self.logo_surface, LOGO_SURFACE_POS)
 
 
     def draw_text_on_screen(self, text):
@@ -430,13 +450,13 @@ class Tetris():
         """
         # Tạo text
         font_path = os.path.join(SOURCES_FILE_DIRECTORY, 'assets/fonts/PixelatedRegular.ttf')
-        pixel_font = pg.font.Font(font_path, 100)
-        text_surface = pixel_font.render(text, 1, 'red')
+        pixelated_regular_font = pg.font.Font(font_path, 100)
+        text_surface = pixelated_regular_font.render(text, 1, 'red')
         text_rect = text_surface.get_rect()
         text_rect.center = (TETRIS_WIDTH // 2, TETRIS_HEIGHT // 2)
         # Tạo 'press any key to continue or ESC to exit'
-        pixel_font = pg.font.Font(font_path, 35)
-        text_surface_2 = pixel_font.render('Press any key to continue or ESC to exit', 1, 'red')
+        pixelated_regular_font = pg.font.Font(font_path, 35)
+        text_surface_2 = pixelated_regular_font.render('Press any key to continue or ESC to exit', 1, 'red')
         text_2_rect = text_surface_2.get_rect()
         text_2_rect.center = (TETRIS_WIDTH // 2, TETRIS_HEIGHT // 2 + 50)
         # Vẽ text lên tetris surface
@@ -530,6 +550,7 @@ class Tetris():
         #self.draw_grid()
         self.draw_tetromino_current_hold()
         self.draw_tetromino_queue()
+        #self.draw_logo()
         self.tetromino.draw_tetromino_drop_shadow()
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
         self.draw_score()

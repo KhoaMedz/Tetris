@@ -24,6 +24,7 @@ DRAW_SPEED_POS = vector(((WINDOW_WIDTH - TETRIS_WIDTH) // 2) - 215, ((WINDOW_HEI
 DRAW_LEVEL_POS = vector(((WINDOW_WIDTH - TETRIS_WIDTH) // 2) - 215, ((WINDOW_HEIGHT - TETRIS_HEIGHT) // 2) + TETRIS_HEIGHT - 175 - 175 - 50)
 DRAW_TETRIS_BORDER_POS = TETRIS_SURFACE_POS + (-19, -87)
 TETROMINO_CURRENT_HOLD_SURFACE_POS = vector(((WINDOW_WIDTH - TETRIS_WIDTH) // 2) - 250 - 50, ((WINDOW_HEIGHT - TETRIS_HEIGHT) // 2) + 90)
+LOGO_SURFACE_POS = vector(1590,30)
 
 # Thiết lập màu sắc
 WHITE = (255,255,255)
@@ -31,7 +32,7 @@ BROWN = (39, 22, 0)
 LIGHT_BROWN = (198, 168, 129)
 GREY = (105, 105, 105)
 DARK_ORANGE = (255, 140, 0)
-
+LIGHT_GREEN = (158,255,54)
 # Time and FPS
 ORIGINAL_FALL_FREQUENCY = 1
 MOVE_SIDEAWAYS_FREQUENCY = 0.05
@@ -42,9 +43,9 @@ FPS = 30
 INITIAL_TETROMINO_POS = vector(3, 0) # Tọa độ ban đầu khi bắt đầu game
 NEXT_TETROMINO_POS = vector(3, -4) # Tọa độ sinh khối tetromino tiếp theo
 
-# Score font size
+# Font size
 FONT_SIZE_SCORE = 50
-
+FONT_SIZE_LOGO = 50
 # Lấy thư mục hiện tại đang chứa file này
 SOURCES_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
