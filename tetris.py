@@ -19,7 +19,7 @@ class Tetris():
         self.speed_surface = pg.Surface((175, 175), pg.SRCALPHA, 32).convert_alpha()
         self.tetromino_queue_surface = pg.Surface((123, 550), pg.SRCALPHA, 32).convert_alpha()
         self.tetromino_current_hold_surface = pg.Surface((250, 415), pg.SRCALPHA, 32).convert_alpha()
-        self.logo_surface = pg.Surface((300, 175), pg.SRCALPHA, 32).convert_alpha()
+        self.logo_surface = pg.Surface((311,118), pg.SRCALPHA, 32).convert_alpha()
         self.tetris_background_image = self.load_image('assets/images/background/tetris_background.png', TETRIS_WIDTH, TETRIS_HEIGHT)
         self.tetris_border_image = self.load_image('assets/images/background/tetris_border.png', TETRIS_WIDTH + 40, TETRIS_HEIGHT + 118)
         self.create_last_action_time()
@@ -434,11 +434,8 @@ class Tetris():
         Process: Vẽ logo.
         Ouput: Không.
         """
-        logo_background_image = self.load_image('assets/images/background/logo_background.png', 300, 175)
-        thaleahfat_font = pg.font.Font('assets/fonts/ThaleahFat.ttf', FONT_SIZE_LOGO)
-        logo_text = thaleahfat_font.render('tetris', 1, 'white')
-        self.logo_surface.blit(logo_background_image, (0, 0))
-        self.logo_surface.blit(logo_text, (100, 80))
+        logo_image = self.load_image('assets/images/logo/logo.png', 311, 118)
+        self.logo_surface.blit(logo_image, (0, 0))
         self.app.display_screen.blit(self.logo_surface, LOGO_SURFACE_POS)
 
 
@@ -550,7 +547,7 @@ class Tetris():
         #self.draw_grid()
         self.draw_tetromino_current_hold()
         self.draw_tetromino_queue()
-        #self.draw_logo()
+        self.draw_logo()
         self.tetromino.draw_tetromino_drop_shadow()
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
         self.draw_score()
