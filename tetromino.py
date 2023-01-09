@@ -24,15 +24,15 @@ class Tetromino():
         else:
             self.core_pos = vector(NEXT_TETROMINO_POS)
 
-        self.tetromino_name = random.choice(list(TETROMINOS.keys()))
-        self.tetromino_rotation = random.randint(0, len(TETROMINOS[self.tetromino_name]) - 1)
-        tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
+        self.tetromino_name = random.choice(list(self.tetris.app.tetrominos.keys()))
+        self.tetromino_rotation = random.randint(0, len(self.tetris.app.tetrominos[self.tetromino_name]) - 1)
+        tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]
         blocks_pos = []
         for x in range(SHAPE_TEMPLATE_COLS):
             for y in range(SHAPE_TEMPLATE_ROWS):
                 if tetromino_shape[y][x] == 'o':
                     blocks_pos.append(vector(x, y) + self.core_pos)
-        image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'assets/images/blocks/block_{TETROMINOS_IMAGE_NUMBER[self.tetromino_name]}.png')
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'assets/images/blocks/block_{self.tetris.app.tetrominos_image_number[self.tetromino_name]}.png')
         self.image = pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE))
         self.blocks = [Block(self, pos) for pos in blocks_pos]
 
@@ -73,8 +73,8 @@ class Tetromino():
         Process: Xoay khối dựa vào hướng xoay (nếu vị trí xoay hợp lệ).
         Ouput: Không.
         """
-        self.tetromino_rotation = (self.tetromino_rotation + rotation_direction) % len(TETROMINOS[self.tetromino_name])
-        tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
+        self.tetromino_rotation = (self.tetromino_rotation + rotation_direction) % len(self.tetris.app.tetrominos[self.tetromino_name])
+        tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]
         list_new_pos = []
         for x in range(SHAPE_TEMPLATE_COLS):
             for y in range(SHAPE_TEMPLATE_ROWS):
@@ -82,7 +82,7 @@ class Tetromino():
                     list_new_pos.append(vector(x, y) + self.core_pos)
         if self.is_collide(list_new_pos):
             self.tetris.play_sound('assets/music/sound_effects/blocking_sound.mp3')
-            self.tetromino_rotation = (self.tetromino_rotation - rotation_direction) % len(TETROMINOS[self.tetromino_name])
+            self.tetromino_rotation = (self.tetromino_rotation - rotation_direction) % len(self.tetris.app.tetrominos[self.tetromino_name])
         else:
             self.tetris.play_sound('assets/music/sound_effects/rotate_sound.wav')
             for i in range(len(self.blocks)):
@@ -140,7 +140,7 @@ class Tetromino():
         Process: Vẽ khối tetromino dựa vào tọa độ truyền vào.
         Ouput: Không.
         """
-        tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
+        tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]
         for x in range(5):
                 for y in range(5):
                     if  tetromino_shape[y][x] == 'o':
@@ -156,7 +156,7 @@ class Tetromino():
         Process: Vẽ khối tetromino bằng hình ảnh dựa vào tọa độ truyền vào.
         Ouput: Không.
         """
-        tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
+        tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]
         for x in range(5):
                 for y in range(5):
                     if  tetromino_shape[y][x] == 'o':
@@ -166,7 +166,7 @@ class Tetromino():
 
 
     def draw_tetromino_current_hold(self, surface, block_size, core_pos_X = 0, core_pos_Y = 0): # core_pos của hàm này là tọa độ thực (dựa theo resolution), ko phải tọa độ trong matrix
-        tetromino_shape = TETROMINOS[self.tetromino_name][self.tetromino_rotation]
+        tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]
         for x in range(5):
                 for y in range(5):
                     if  tetromino_shape[y][x] == 'o':

@@ -286,36 +286,54 @@ BOAT_TEMP =  [['.....',
                '.....']]
 
 
-TETROMINOS = {'I': I_TEMP,
-              'L': L_TEMP,
-              'J': J_TEMP,
-              'S': S_TEMP,
-              'Z': Z_TEMP,
-              'T': T_TEMP,
-              'O': O_TEMP,
-              'DOT': DOT_TEMP,
-              'SMALL_L': SMALL_L_TEMP,
-              'SMALL_I': SMALL_I_TEMP,
-              'CROSS': CROSS_TEMP,
-              'PLUS': PLUS_TEMP,
-              'V': V_TEMP,
-              'BOAT': BOAT_TEMP}
+#Classic mode ------------------------------------------------------------------------------------
+TETROMINOS_CLASSIC = {'I': I_TEMP,
+                      'L': L_TEMP,
+                      'J': J_TEMP,
+                      'S': S_TEMP,
+                      'Z': Z_TEMP,
+                      'T': T_TEMP,
+                      'O': O_TEMP}
 
 
 # Số hiệu ảnh theo hình khối tetromino
-TETROMINOS_IMAGE_NUMBER = {'I': 0,
-                           'L': 1,
-                           'J': 2,
-                           'S': 3,
-                           'Z': 4,
-                           'T': 5,
-                           'O': 6,
-                           'DOT': 7,
-                           'SMALL_L': 8,
-                           'SMALL_I': 9,
-                           'CROSS': 10,
-                           'PLUS': 11,
-                           'V': 12,
-                           'BOAT': 13}
+TETROMINOS_IMAGE_NUMBER_CLASSIC = {'I': 0,
+                                   'L': 1,
+                                   'J': 2,
+                                   'S': 3,
+                                   'Z': 4,
+                                   'T': 5,
+                                   'O': 6}
+
+#Modern mode ------------------------------------------------------------------------------------
+TETROMINOS_MODERN = {'I': I_TEMP,
+                      'L': L_TEMP,
+                      'J': J_TEMP,
+                      'S': S_TEMP,
+                      'Z': Z_TEMP,
+                      'T': T_TEMP,
+                      'O': O_TEMP,
+                      'DOT': DOT_TEMP,
+                      'SMALL_L': SMALL_L_TEMP,
+                      'SMALL_I': SMALL_I_TEMP,
+                      'CROSS': CROSS_TEMP,
+                      'PLUS': PLUS_TEMP,
+                      'V': V_TEMP,
+                      'BOAT': BOAT_TEMP}
 
 
+# Số hiệu ảnh theo hình khối tetromino
+TETROMINOS_IMAGE_NUMBER_MODERN = {'I': 0,
+                                   'L': 1,
+                                   'J': 2,
+                                   'S': 3,
+                                   'Z': 4,
+                                   'T': 5,
+                                   'O': 6,
+                                   'DOT': 7,
+                                   'SMALL_L': 8,
+                                   'SMALL_I': 9,
+                                   'CROSS': 10,
+                                   'PLUS': 11,
+                                   'V': 12,
+                                   'BOAT': 13}

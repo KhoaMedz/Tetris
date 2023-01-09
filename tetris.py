@@ -209,10 +209,11 @@ class Tetris():
                 self.moving_down = False
                 self.tetromino.move_all_the_way_down()
         elif pressed_key == pg.K_p:
-            self.draw_text_on_screen('PAUSE')
-            self.last_fall_down_time = time.time()
-            self.last_move_down_time = time.time()
-            self.last_move_sideways_time = time.time()
+            # self.draw_text_on_screen('PAUSE')
+            # self.last_fall_down_time = time.time()
+            # self.last_move_down_time = time.time()
+            # self.last_move_sideways_time = time.time()
+            self.app.pause_menu()
 
 
     def hold_key_handle(self):
@@ -241,6 +242,7 @@ class Tetris():
         """
         if self.tetromino.landing:
             if self.is_game_over():
+                self.run_game_over_effect()
                 self.draw_text_on_screen('Game Over')
                 self.__init__(self.app) # game over handle
             else:
@@ -251,6 +253,24 @@ class Tetris():
                 self.calculate_fall_frequency()
                 self.tetromino = self.tetromino_queue.get()
                 self.tetromino_queue.put(Tetromino(self))
+
+
+    def run_game_over_effect(self):
+        """
+        Input: Không.
+        Process: Chạy hiệu ứng khi game over.
+        Ouput: Không.
+        """
+        for y in range(TETRIS_ROWS - 1, -1, -1):
+            for x in range(TETRIS_COLS):
+                game_over_block_image = self.load_image('assets/images/blocks/block_classic.png', BLOCK_SIZE, BLOCK_SIZE)
+                self.tetris_surface.blit(game_over_block_image, (x * BLOCK_SIZE, y * BLOCK_SIZE))
+                self.app.display_screen.blit(self.tetris_surface, self.tetris_surface_pos)
+                self.draw_tetris_border(self.tetris_border_pos)
+                pg.display.flip()
+                self.app.fps_clock.tick(100)
+        for event in pg.event.get(): # Nếu trong lúc đang chạy hiệu ứng mà người chơi có bấm phím thì lấy phím đó ra, tránh phím đó ảnh hưởng đến các chức năng sau đó.
+            pass # chỗ này không cần xử lý gì cả
 
 
     def is_completed_line(self, line):
@@ -544,11 +564,13 @@ class Tetris():
         Ouput: Không.
         """
         self.draw_background(vector(0, 0))
-        #self.draw_grid()
+        if self.app.show_grid == True: # Nếu người dùng vào menu option chọn show grid thì mới show ra
+            self.draw_grid()
         self.draw_tetromino_current_hold()
         self.draw_tetromino_queue()
         self.draw_logo()
-        self.tetromino.draw_tetromino_drop_shadow()
+        if self.app.show_tetromino_shadow == True:
+            self.tetromino.draw_tetromino_drop_shadow() # Tương tự show grid
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
         self.draw_score()
         self.draw_next_level()
