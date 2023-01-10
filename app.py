@@ -202,7 +202,8 @@ class App():
                         self.terminate_program()
 
             #Draw
-            self.display_screen.fill('grey')
+            pause_menu_background_image = self.tetris.load_image('assets/images/background/pause_background.jpg', 1920, 1080)
+            self.display_screen.blit(pause_menu_background_image, (0, 0))
             for button in [resume_button, option_button, main_menu_button, quit_button]:
                 if button.is_mouse_collide():
                     button.hover()
@@ -212,22 +213,43 @@ class App():
 
 
     def setting_menu(self):
+        setting_pop_up_surface = pg.Surface((1000, 300))
+        turtorial_pop_up_surface = pg.Surface((1000, 300))
         while True:
             mouse_pos = pg.mouse.get_pos()
-            grid_radio_button = Button('assets/images/button/grid_button.png', 50, 50, mouse_pos, ((1920 // 2) - 75, (1080 // 2) - 33))
-            shadow_radio_button = Button('assets/images/button/shadow_button.png', 50, 50, mouse_pos, ((1920 // 2) - 75 + 70, (1080 // 2) - 33))
-            back_button = Button('assets/images/button/back_button.png', 300, 75, mouse_pos, ((1920 // 2) - 75, (1080 // 2) - 33 + 50))
+
+
+            if self.show_grid == True:
+                grid_check_button = Button('assets/images/button/check_button.png', 50, 50, mouse_pos, (1350, 440))
+            else:
+                grid_check_button = Button('assets/images/button/uncheck_button.png', 50, 50, mouse_pos, (1350, 440))
+
+
+            if self.show_tetromino_shadow == True:
+                shadow_check_button = Button('assets/images/button/check_button.png', 50, 50, mouse_pos, (1350, 540))
+            else:
+                shadow_check_button = Button('assets/images/button/uncheck_button.png', 50, 50, mouse_pos, (1350, 540))
+            
+            
+            back_button = Button('assets/images/button/back_button.png', 300, 75, mouse_pos, (200 ,960))
+
+            # Text
+            quaver_font = pg.font.Font('assets/fonts/quaver.ttf', FONT_SIZE_SCORE)
+            show_grid_text = quaver_font.render('Show grid: ', 1, 'white')
+            show_tetromino_shadow = quaver_font.render('Show tetromino shadow: ', 1, 'white')
+
+
             #Event handle
             for event in pg.event.get():
                 if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                     self.terminate_program()
                 if event.type == pg.MOUSEBUTTONDOWN:
-                    if grid_radio_button.is_mouse_collide():
+                    if grid_check_button.is_mouse_collide():
                         if self.show_grid == False:
                             self.show_grid = True
                         else:
                              self.show_grid = False
-                    elif shadow_radio_button.is_mouse_collide():
+                    elif shadow_check_button.is_mouse_collide():
                         if self.show_tetromino_shadow == False:
                             self.show_tetromino_shadow = True
                         else:
@@ -236,10 +258,22 @@ class App():
                         return
 
             #Draw
-            self.display_screen.fill('grey')
-            grid_radio_button.blit_to_surface(self.display_screen)
-            shadow_radio_button.blit_to_surface(self.display_screen)
-            back_button.blit_to_surface(self.display_screen)
+            turtorial_pop_up_surface.fill('orange')
+            setting_pop_up_surface.fill('orange')
+            setting_pop_up_surface.blit(show_grid_text, (40, 125))
+            setting_pop_up_surface.blit(show_tetromino_shadow, (40, 225))
+            setting_menu_background_image = self.tetris.load_image('assets/images/background/setting_background.png', 1920, 1080)
+            self.display_screen.blit(setting_menu_background_image, (0, 0))
+            self.display_screen.blit(setting_pop_up_surface, (460, 300))
+            self.display_screen.blit(turtorial_pop_up_surface, (460, 700))
+            for button in [grid_check_button, shadow_check_button, back_button]:
+                if button.is_mouse_collide():
+                    button.hover()
+                button.blit_to_surface(self.display_screen)
+
+            # grid_radio_button.blit_to_surface(self.display_screen)
+            # shadow_radio_button.blit_to_surface(self.display_screen)
+            # back_button.blit_to_surface(self.display_screen)
             pg.display.flip()
             self.fps_clock.tick()
 

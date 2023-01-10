@@ -208,6 +208,7 @@ class Tetris():
                 self.moving_right = False
                 self.moving_down = False
                 self.tetromino.move_all_the_way_down()
+                self.last_fall_down_time = time.time()
         elif pressed_key == pg.K_p:
             # self.draw_text_on_screen('PAUSE')
             # self.last_fall_down_time = time.time()
