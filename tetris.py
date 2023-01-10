@@ -209,11 +209,7 @@ class Tetris():
                 self.moving_down = False
                 self.tetromino.move_all_the_way_down()
                 self.last_fall_down_time = time.time()
-        elif pressed_key == pg.K_p:
-            # self.draw_text_on_screen('PAUSE')
-            # self.last_fall_down_time = time.time()
-            # self.last_move_down_time = time.time()
-            # self.last_move_sideways_time = time.time()
+        elif pressed_key == pg.K_ESCAPE:
             self.app.pause_menu()
 
 
@@ -244,8 +240,8 @@ class Tetris():
         if self.tetromino.landing:
             if self.is_game_over():
                 self.run_game_over_effect()
-                self.draw_text_on_screen('Game Over')
                 self.__init__(self.app) # game over handle
+                self.app.game_over_menu()
             else:
                 self.put_tetromino_blocks_into_matrix()
                 removed_lines_num = self.removed_completed_lines()
@@ -264,12 +260,12 @@ class Tetris():
         """
         for y in range(TETRIS_ROWS - 1, -1, -1):
             for x in range(TETRIS_COLS):
-                game_over_block_image = self.load_image('assets/images/blocks/block_classic.png', BLOCK_SIZE, BLOCK_SIZE)
+                game_over_block_image = self.load_image('assets/images/blocks/game_over_block.png', BLOCK_SIZE, BLOCK_SIZE)
                 self.tetris_surface.blit(game_over_block_image, (x * BLOCK_SIZE, y * BLOCK_SIZE))
                 self.app.display_screen.blit(self.tetris_surface, self.tetris_surface_pos)
                 self.draw_tetris_border(self.tetris_border_pos)
                 pg.display.flip()
-                self.app.fps_clock.tick(100)
+                self.app.fps_clock.tick(200)
         for event in pg.event.get(): # Nếu trong lúc đang chạy hiệu ứng mà người chơi có bấm phím thì lấy phím đó ra, tránh phím đó ảnh hưởng đến các chức năng sau đó.
             pass # chỗ này không cần xử lý gì cả
 
@@ -455,7 +451,7 @@ class Tetris():
         Process: Vẽ logo.
         Ouput: Không.
         """
-        logo_image = self.load_image('assets/images/logo/logo.png', 311, 118)
+        logo_image = self.load_image('assets/images/background/main_logo.png', 311, 118)
         self.logo_surface.blit(logo_image, (0, 0))
         self.app.display_screen.blit(self.logo_surface, LOGO_SURFACE_POS)
 

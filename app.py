@@ -70,9 +70,7 @@ class App():
         """
         self.effect_trigger = False
         for event in pg.event.get():
-            if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
-                self.terminate_program()
-            elif event.type == pg.KEYDOWN:
+            if event.type == pg.KEYDOWN:
                 self.tetris.key_down_handle(pressed_key=event.key)
             elif event.type == pg.KEYUP:
                 self.tetris.key_up_handle(release_key=event.key)
@@ -137,6 +135,8 @@ class App():
 
 
     def main_menu(self):
+        logo_image = self.tetris.load_image('assets/images/background/main_logo.png', 790, 300)
+        main_menu_background_image = self.tetris.load_image('assets/images/background/main_menu_background.png', 1920, 1080)
         while True:
             mouse_pos = pg.mouse.get_pos()
             play_button = Button('assets/images/button/play_button.png', 300, 75, mouse_pos, (WINDOW_WIDTH // 2, 610))
@@ -149,8 +149,6 @@ class App():
 
             #Event handle
             for event in pg.event.get():
-                if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
-                    self.terminate_program()
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if play_button.is_mouse_collide():
                         self.tetris.__init__(self)
@@ -167,7 +165,8 @@ class App():
                         self.terminate_program()
 
             #Draw
-            self.display_screen.fill('grey')
+            self.display_screen.blit(main_menu_background_image, (0, 0))
+            self.display_screen.blit(logo_image, (550, 60))
             for button in [play_button, game_mode_button, option_button, quit_button]:
                 if button.is_mouse_collide():
                     button.hover()
@@ -187,8 +186,6 @@ class App():
 
             #Event handle
             for event in pg.event.get():
-                if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
-                    self.terminate_program()
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if resume_button.is_mouse_collide():
                         self.tetris.last_fall_down_time = time.time()
@@ -222,9 +219,9 @@ class App():
         tutorial_popup_background_image = self.tetris.load_image('assets/images/background/tutorial_popup_background.png', 1000, 435)
         option_menu_background_image = self.tetris.load_image('assets/images/background/option_background.png', 1920, 1080)
         option_logo_image = self.tetris.load_image('assets/images/background/option_logo.png', 1920, 90)
+
         while True:
             mouse_pos = pg.mouse.get_pos()
-
             if self.show_grid == True:
                 grid_check_button = Button('assets/images/button/check_button.png', 50, 50, mouse_pos, (1350, 330))
             else:
@@ -234,7 +231,6 @@ class App():
                 shadow_check_button = Button('assets/images/button/check_button.png', 50, 50, mouse_pos, (1350, 410))
             else:
                 shadow_check_button = Button('assets/images/button/uncheck_button.png', 50, 50, mouse_pos, (1350, 410))
-            
             back_button = Button('assets/images/button/back_button.png', 300, 75, mouse_pos, (200 ,960))
 
             # Load fonts
@@ -251,8 +247,6 @@ class App():
 
             #Event handle
             for event in pg.event.get():
-                if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
-                    self.terminate_program()
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if grid_check_button.is_mouse_collide():
                         if self.show_grid == False:
@@ -287,12 +281,39 @@ class App():
                     button.hover()
                 button.blit_to_surface(self.display_screen)
 
-            # grid_radio_button.blit_to_surface(self.display_screen)
-            # shadow_radio_button.blit_to_surface(self.display_screen)
-            # back_button.blit_to_surface(self.display_screen)
             pg.display.flip()
             self.fps_clock.tick()
 
+
+    def game_over_menu(self):
+        game_over_popup_background_image = self.tetris.load_image('assets/images/background/game_over_popup_background.png', 400, 450)
+        while True:
+            mouse_pos = pg.mouse.get_pos()
+            restart_button = Button('assets/images/button/restart_button.png', 250, 62, mouse_pos, (WINDOW_WIDTH // 2, 450))
+            main_menu_button = Button('assets/images/button/main_menu_button.png', 250, 62, mouse_pos, (WINDOW_WIDTH // 2, 540))
+            quit_button = Button('assets/images/button/quit_button.png', 250, 62, mouse_pos, (WINDOW_WIDTH // 2, 630))
+
+            #Event handle
+            for event in pg.event.get():
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    if restart_button.is_mouse_collide():
+                        self.tetris.last_fall_down_time = time.time()
+                        self.tetris.last_move_down_time = time.time()
+                        self.tetris.last_move_sideways_time = time.time()
+                        self.play_game()
+                    if main_menu_button.is_mouse_collide():
+                        self.main_menu()
+                    if quit_button.is_mouse_collide():
+                        self.terminate_program()
+
+            #Draw
+            self.display_screen.blit(game_over_popup_background_image, (762, 290))
+            for button in [restart_button, main_menu_button, quit_button]:
+                if button.is_mouse_collide():
+                    button.hover()
+                button.blit_to_surface(self.display_screen)
+            pg.display.flip()
+            self.fps_clock.tick()
 
     def run(self):
         self.main_menu()
