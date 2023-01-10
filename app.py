@@ -177,7 +177,8 @@ class App():
 
 
     def pause_menu(self):
-         while True:
+        pause_logo_image = self.tetris.load_image('assets/images/background/pause_logo.png', 1920, 90)
+        while True:
             mouse_pos = pg.mouse.get_pos()
             resume_button = Button('assets/images/button/resume_button.png', 300, 75, mouse_pos, (WINDOW_WIDTH // 2, 610))
             option_button = Button('assets/images/button/option_button.png', 300, 75, mouse_pos, (WINDOW_WIDTH // 2, 720))
@@ -204,6 +205,7 @@ class App():
             #Draw
             pause_menu_background_image = self.tetris.load_image('assets/images/background/pause_background.jpg', 1920, 1080)
             self.display_screen.blit(pause_menu_background_image, (0, 0))
+            self.display_screen.blit(pause_logo_image, (0, 40))
             for button in [resume_button, option_button, main_menu_button, quit_button]:
                 if button.is_mouse_collide():
                     button.hover()
@@ -213,31 +215,39 @@ class App():
 
 
     def setting_menu(self):
-        setting_pop_up_surface = pg.Surface((1000, 300))
-        turtorial_pop_up_surface = pg.Surface((1000, 300))
+        # Tạo surface popup và load ảnh
+        setting_pop_up_surface = pg.Surface((1000, 300), pg.SRCALPHA, 32).convert_alpha()
+        tutorial_pop_up_surface = pg.Surface((1000, 550), pg.SRCALPHA, 32).convert_alpha()
+        setting_popup_background_image = self.tetris.load_image('assets/images/background/setting_popup_background.png', 1000, 300)
+        tutorial_popup_background_image = self.tetris.load_image('assets/images/background/tutorial_popup_background.png', 1000, 435)
+        option_menu_background_image = self.tetris.load_image('assets/images/background/option_background.png', 1920, 1080)
+        option_logo_image = self.tetris.load_image('assets/images/background/option_logo.png', 1920, 90)
         while True:
             mouse_pos = pg.mouse.get_pos()
 
-
             if self.show_grid == True:
-                grid_check_button = Button('assets/images/button/check_button.png', 50, 50, mouse_pos, (1350, 440))
+                grid_check_button = Button('assets/images/button/check_button.png', 50, 50, mouse_pos, (1350, 330))
             else:
-                grid_check_button = Button('assets/images/button/uncheck_button.png', 50, 50, mouse_pos, (1350, 440))
-
+                grid_check_button = Button('assets/images/button/uncheck_button.png', 50, 50, mouse_pos, (1350, 330))
 
             if self.show_tetromino_shadow == True:
-                shadow_check_button = Button('assets/images/button/check_button.png', 50, 50, mouse_pos, (1350, 540))
+                shadow_check_button = Button('assets/images/button/check_button.png', 50, 50, mouse_pos, (1350, 410))
             else:
-                shadow_check_button = Button('assets/images/button/uncheck_button.png', 50, 50, mouse_pos, (1350, 540))
-            
+                shadow_check_button = Button('assets/images/button/uncheck_button.png', 50, 50, mouse_pos, (1350, 410))
             
             back_button = Button('assets/images/button/back_button.png', 300, 75, mouse_pos, (200 ,960))
 
-            # Text
-            quaver_font = pg.font.Font('assets/fonts/quaver.ttf', FONT_SIZE_SCORE)
-            show_grid_text = quaver_font.render('Show grid: ', 1, 'white')
-            show_tetromino_shadow = quaver_font.render('Show tetromino shadow: ', 1, 'white')
+            # Load fonts
+            quaver_font_size_50 = pg.font.Font('assets/fonts/quaver.ttf', 50)
+            quaver_font_size_40 = pg.font.Font('assets/fonts/quaver.ttf', 40)
 
+            # Setting_popup_texts
+            setting_popup_name_text = quaver_font_size_50.render('Setting', 1, (86, 52, 42))
+            show_grid_text = quaver_font_size_40.render('Show grid: ', 1, 'white')
+            show_tetromino_shadow_text = quaver_font_size_40.render('Show tetromino shadow: ', 1, 'white')
+
+            # Tutorial texts
+            tutorial_popup_name_text = quaver_font_size_50.render('Tutorial', 1, (86, 52, 42))
 
             #Event handle
             for event in pg.event.get():
@@ -257,15 +267,21 @@ class App():
                     elif back_button.is_mouse_collide():
                         return
 
-            #Draw
-            turtorial_pop_up_surface.fill('orange')
-            setting_pop_up_surface.fill('orange')
-            setting_pop_up_surface.blit(show_grid_text, (40, 125))
-            setting_pop_up_surface.blit(show_tetromino_shadow, (40, 225))
-            setting_menu_background_image = self.tetris.load_image('assets/images/background/setting_background.png', 1920, 1080)
-            self.display_screen.blit(setting_menu_background_image, (0, 0))
-            self.display_screen.blit(setting_pop_up_surface, (460, 300))
-            self.display_screen.blit(turtorial_pop_up_surface, (460, 700))
+            #Setting popup
+            setting_pop_up_surface.blit(setting_popup_background_image, (0, 0))
+            setting_pop_up_surface.blit(setting_popup_name_text, (50, 15))
+            setting_pop_up_surface.blit(show_grid_text, (40, 120))
+            setting_pop_up_surface.blit(show_tetromino_shadow_text, (40, 200))
+            
+            #Turtorial_popup
+            tutorial_pop_up_surface.blit(tutorial_popup_background_image, (0, 0))
+            tutorial_pop_up_surface.blit(tutorial_popup_name_text, (35, 15))
+
+            #Display screen
+            self.display_screen.blit(option_menu_background_image, (0, 0))
+            self.display_screen.blit(option_logo_image, (0, 40))
+            self.display_screen.blit(setting_pop_up_surface, (460, 200))
+            self.display_screen.blit(tutorial_pop_up_surface, (460, 550))
             for button in [grid_check_button, shadow_check_button, back_button]:
                 if button.is_mouse_collide():
                     button.hover()
