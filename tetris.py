@@ -143,7 +143,7 @@ class Tetris():
         """
         for x in range(TETRIS_COLS):
             for y in range(TETRIS_ROWS):
-                pg.draw.rect(self.tetris_surface, GREY, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+                pg.draw.rect(self.tetris_surface, (51, 25, 0), (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
 
 
     def draw_background(self, pos):
@@ -202,14 +202,14 @@ class Tetris():
             self.tetromino.rotate(1)
         elif pressed_key == pg.K_x: # Xoay ngược chiều kim đồng hồ
             self.tetromino.rotate(-1)
-        elif pressed_key == pg.K_c:
+        elif pressed_key == pg.K_c or pressed_key == pg.K_SPACE:
             if self.counter == -1: # Nếu counter != -1 nghĩa là hiệu ứng rung động đang diễn ra, không thể thực hiện chức năng rơi xuống lập tức được.
                 self.moving_left = False
                 self.moving_right = False
                 self.moving_down = False
                 self.tetromino.move_all_the_way_down()
                 self.last_fall_down_time = time.time()
-        elif pressed_key == pg.K_ESCAPE:
+        elif pressed_key == pg.K_ESCAPE or pressed_key == pg.K_RETURN:
             self.app.pause_menu()
 
 
@@ -239,6 +239,7 @@ class Tetris():
         """
         if self.tetromino.landing:
             if self.is_game_over():
+                self.play_sound('assets/music/sound_effects/game_over_sound.mp3')
                 self.run_game_over_effect()
                 self.__init__(self.app) # game over handle
                 self.app.game_over_menu()
@@ -265,7 +266,7 @@ class Tetris():
                 self.app.display_screen.blit(self.tetris_surface, self.tetris_surface_pos)
                 self.draw_tetris_border(self.tetris_border_pos)
                 pg.display.flip()
-                self.app.fps_clock.tick(200)
+                self.app.fps_clock.tick(120)
         for event in pg.event.get(): # Nếu trong lúc đang chạy hiệu ứng mà người chơi có bấm phím thì lấy phím đó ra, tránh phím đó ảnh hưởng đến các chức năng sau đó.
             pass # chỗ này không cần xử lý gì cả
 
@@ -498,7 +499,15 @@ class Tetris():
         return False
 
 
-    def play_sound(self, sound_path):
+    def play_music(self, music_path, loop = 0, start_at = 0, custom_volume = False, volume = 0):
+        music_path = os.path.join(SOURCES_FILE_DIRECTORY, music_path)
+        pg.mixer.music.load(music_path)
+        pg.mixer.music.play(loop, start_at)
+        if custom_volume == True:
+            pg.mixer.music.set_volume(volume)
+
+
+    def play_sound(self, sound_path, custom_volume = False, volume = 0):
         """
         Input: Đường dẫn file âm thanh.
         Process: Play âm thanh.
@@ -507,6 +516,8 @@ class Tetris():
         sound_path = os.path.join(SOURCES_FILE_DIRECTORY, sound_path)
         sound_to_play = pg.mixer.Sound(sound_path)
         sound_to_play.play()
+        if custom_volume == True:
+            sound_to_play.set_volume(volume)
 
 
     def change_tetris_surface_position(self):

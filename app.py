@@ -135,6 +135,7 @@ class App():
 
 
     def main_menu(self):
+        self.tetris.play_music('assets/music/background_music/main_menu_theme.mp3', -1, 4.0, True, 0.5)
         logo_image = self.tetris.load_image('assets/images/background/main_logo.png', 790, 300)
         main_menu_background_image = self.tetris.load_image('assets/images/background/main_menu_background.png', 1920, 1080)
         while True:
