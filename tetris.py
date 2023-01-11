@@ -239,6 +239,7 @@ class Tetris():
         """
         if self.tetromino.landing:
             if self.is_game_over():
+                pg.mixer.music.stop()
                 self.play_sound('assets/music/sound_effects/game_over_sound.mp3')
                 self.run_game_over_effect()
                 self.__init__(self.app) # game over handle
@@ -500,6 +501,11 @@ class Tetris():
 
 
     def play_music(self, music_path, loop = 0, start_at = 0, custom_volume = False, volume = 0):
+        """
+        Input: Đường dẫn file music.
+        Process: Play music.
+        Ouput: Không.
+        """
         music_path = os.path.join(SOURCES_FILE_DIRECTORY, music_path)
         pg.mixer.music.load(music_path)
         pg.mixer.music.play(loop, start_at)
@@ -509,8 +515,8 @@ class Tetris():
 
     def play_sound(self, sound_path, custom_volume = False, volume = 0):
         """
-        Input: Đường dẫn file âm thanh.
-        Process: Play âm thanh.
+        Input: Đường dẫn file sound.
+        Process: Play sound effect.
         Ouput: Không.
         """
         sound_path = os.path.join(SOURCES_FILE_DIRECTORY, sound_path)

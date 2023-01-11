@@ -84,7 +84,7 @@ class Tetromino():
             self.tetris.play_sound('assets/music/sound_effects/blocking_sound.mp3')
             self.tetromino_rotation = (self.tetromino_rotation - rotation_direction) % len(self.tetris.app.tetrominos[self.tetromino_name])
         else:
-            self.tetris.play_sound('assets/music/sound_effects/rotate_sound.wav')
+            self.tetris.play_sound('assets/music/sound_effects/rotate_sound.wav', custom_volume = True, volume = 0.7)
             for i in range(len(self.blocks)):
                 self.blocks[i].set_block_pos(list_new_pos[i])
         

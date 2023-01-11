@@ -128,6 +128,7 @@ class App():
         Process: Chạy vòng lặp chính của game.
         Ouput: Không.
         """
+        self.tetris.play_music('assets/music/background_music/play_game_theme_0.mp3', -1, custom_volume= True, volume= 0.7)
         while 1:
             self.check_events()
             self.update()
@@ -135,7 +136,7 @@ class App():
 
 
     def main_menu(self):
-        self.tetris.play_music('assets/music/background_music/main_menu_theme.mp3', -1, 4.0, True, 0.5)
+        self.tetris.play_music('assets/music/background_music/main_menu_theme.mp3', -1, 3.7, True, 0.5)
         logo_image = self.tetris.load_image('assets/images/background/main_logo.png', 790, 300)
         main_menu_background_image = self.tetris.load_image('assets/images/background/main_menu_background.png', 1920, 1080)
         while True:
@@ -192,7 +193,7 @@ class App():
                         self.tetris.last_fall_down_time = time.time()
                         self.tetris.last_move_down_time = time.time()
                         self.tetris.last_move_sideways_time = time.time()
-                        self.play_game()
+                        return
                     if option_button.is_mouse_collide():
                         self.setting_menu()
                     if main_menu_button.is_mouse_collide():
