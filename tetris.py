@@ -117,7 +117,7 @@ class Tetris():
         Process: Kiểm tra tọa độ input có hợp lệ trong ma trận không.
         Ouput: Biến boolean.
         """
-        if 0 <= x < TETRIS_COLS and 0 <= y < TETRIS_HEIGHT:
+        if 0 <= x < TETRIS_COLS and 0 <= y < TETRIS_ROWS:
             return False
         return True
 
