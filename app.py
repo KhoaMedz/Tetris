@@ -133,7 +133,7 @@ class App():
             self.check_events()
             self.update()
             self.draw()
-
+            
 
     def main_menu(self):
         self.tetris.play_music('assets/music/background_music/main_menu_theme.mp3', -1, 3.7, True, 0.5)
