@@ -136,6 +136,11 @@ class App():
             
 
     def main_menu(self):
+        """
+        Input: Không.
+        Process: Chạy main menu.
+        Ouput: Không.
+        """
         self.tetris.play_music('assets/music/background_music/main_menu_theme.mp3', -1, 3.7, True, 0.5)
         logo_image = self.tetris.load_image('assets/images/background/main_logo.png', 790, 300)
         main_menu_background_image = self.tetris.load_image('assets/images/background/main_menu_background.png', 1920, 1080)
@@ -178,10 +183,16 @@ class App():
 
 
     def pause_menu(self):
+        """
+        Input: Không.
+        Process: Chạy menu dừng game.
+        Ouput: Không.
+        """
         pause_logo_image = self.tetris.load_image('assets/images/background/pause_logo.png', 1920, 90)
         while True:
             mouse_pos = pg.mouse.get_pos()
-            resume_button = Button('assets/images/button/resume_button.png', 300, 75, mouse_pos, (WINDOW_WIDTH // 2, 610))
+            resume_button = Button('assets/images/button/resume_button.png', 300, 75, mouse_pos, (WINDOW_WIDTH // 2, 500))
+            restart_button = Button('assets/images/button/restart_button.png', 300, 75, mouse_pos, (WINDOW_WIDTH // 2, 610))
             option_button = Button('assets/images/button/option_button.png', 300, 75, mouse_pos, (WINDOW_WIDTH // 2, 720))
             main_menu_button = Button('assets/images/button/main_menu_button.png', 300, 75, mouse_pos, (WINDOW_WIDTH // 2, 830))
             quit_button = Button('assets/images/button/quit_button.png', 300, 75, mouse_pos, (WINDOW_WIDTH // 2, 940))
@@ -194,6 +205,9 @@ class App():
                         self.tetris.last_move_down_time = time.time()
                         self.tetris.last_move_sideways_time = time.time()
                         return
+                    if restart_button.is_mouse_collide():
+                        self.tetris.__init__(self)
+                        self.play_game()
                     if option_button.is_mouse_collide():
                         self.setting_menu()
                     if main_menu_button.is_mouse_collide():
@@ -205,7 +219,7 @@ class App():
             pause_menu_background_image = self.tetris.load_image('assets/images/background/pause_background.jpg', 1920, 1080)
             self.display_screen.blit(pause_menu_background_image, (0, 0))
             self.display_screen.blit(pause_logo_image, (0, 40))
-            for button in [resume_button, option_button, main_menu_button, quit_button]:
+            for button in [resume_button, restart_button, option_button, main_menu_button, quit_button]:
                 if button.is_mouse_collide():
                     button.hover()
                 button.blit_to_surface(self.display_screen)
@@ -214,6 +228,11 @@ class App():
 
 
     def setting_menu(self):
+        """
+        Input: Không.
+        Process: Chạy menu option.
+        Ouput: Không.
+        """
         # Tạo surface popup và load ảnh
         setting_pop_up_surface = pg.Surface((1000, 300), pg.SRCALPHA, 32).convert_alpha()
         tutorial_pop_up_surface = pg.Surface((1000, 550), pg.SRCALPHA, 32).convert_alpha()
@@ -288,6 +307,12 @@ class App():
 
 
     def game_over_menu(self):
+        """
+        Input: Không.
+        Process: Chạy menu game over.
+        Ouput: Không.
+        """
+        self.tetris.play_music('assets/music/background_music/game_over_theme.mp3', -1, 0, True, 0.8)
         game_over_popup_background_image = self.tetris.load_image('assets/images/background/game_over_popup_background.png', 400, 450)
         while True:
             mouse_pos = pg.mouse.get_pos()
@@ -318,5 +343,10 @@ class App():
             self.fps_clock.tick()
 
     def run(self):
+        """
+        Input: Không.
+        Process: Chạy game.
+        Ouput: Không.
+        """
         self.main_menu()
 
