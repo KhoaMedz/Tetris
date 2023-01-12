@@ -1,5 +1,6 @@
 from game_settings import *
 from tetromino import *
+from sparkle import *
 
 class Tetris():
     def __init__(self, app):
@@ -31,8 +32,7 @@ class Tetris():
         self.tetris_border_pos = vector(DRAW_TETRIS_BORDER_POS)
         self.tetris_surface_move_direction = 'down' # Biến dùng để điều khiển hướng của hiệu ứng rung động.
         self.counter = -1 # Biến đếm để chạy hiệu ứng rung động khi dùng chức năng rơi khối tetromino ngay lập tức.
-        self.four_lines_clear_effect_counter = -1
-
+        self.sparkle_group = pg.sprite.Group()
         
     def create_last_action_time(self):
         """
@@ -309,10 +309,9 @@ class Tetris():
                 line -= 1
         if 0 < removed_lines_num < 4:
             self.play_sound('assets/music/sound_effects/normal_clear_line_sound.wav')
-            self.four_lines_clear_effect_counter = 0
         elif removed_lines_num == 4:
             self.play_sound('assets/music/sound_effects/four_line_clear_sound.mp3')
-            self.four_lines_clear_effect_counter = 0
+            Sparkle(self)
         else:
             self.play_sound('assets/music/sound_effects/drop_sound.mp3')
         return removed_lines_num
@@ -562,17 +561,6 @@ class Tetris():
             self.counter += 1
 
 
-    def run_four_lines_clear_effect(self):
-        if self.four_lines_clear_effect_counter != -1:
-            effect_image = self.load_image(f'assets/images/effect/four_line_clear_effect/frame_{self.four_lines_clear_effect_counter}.gif', 500, 1000)
-            self.tetris_surface.blit(effect_image, (0, 0))
-            if self.four_lines_clear_effect_counter == 12:
-                self.four_lines_clear_effect_counter = -1
-                return
-            if self.app.effect_trigger == True: # Cần tạo ra 1 user event riêng cho effect này
-                self.four_lines_clear_effect_counter += 1
-
-
     def update(self):
         """
         Input: Không.
@@ -584,6 +572,7 @@ class Tetris():
         self.hold_key_handle()
         self.landed_tetromino_handle()
         self.tetris_surface_vibration_handling()
+        self.sparkle_group.update()
         self.sprites_group.update()
 
 
@@ -596,7 +585,7 @@ class Tetris():
         self.draw_background(vector(0, 0))
         if self.app.show_grid == True: # Nếu người dùng vào menu option chọn show grid thì mới show ra
             self.draw_grid()
-        self.run_four_lines_clear_effect()
+        self.sparkle_group.draw(self.tetris_surface)
         self.draw_tetromino_current_hold()
         self.draw_tetromino_queue()
         self.draw_logo()
