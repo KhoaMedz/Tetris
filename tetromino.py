@@ -18,13 +18,14 @@ class Tetromino():
     def init_tetromino_type(self):
         if self.tetris.app.game_mode == 'modern':
             types = ['normal', 'bomb']
-            random_type = random.randint(0, 10)
-            if random_type < 8:
+            random_type = random.randint(1, 100)
+            if random_type <= 94 :
                 self.tetromino_type = types[0]
-            elif random_type >= 8:
+            elif random_type > 94:
                 self.tetromino_type = types[1]
         elif self.tetris.app.game_mode == 'classic':
             self.tetromino_type = 'normal'
+
 
     def create_tetromino(self, is_first_tetromino):
         """
