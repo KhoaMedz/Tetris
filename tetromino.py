@@ -1,5 +1,6 @@
 from game_settings import *
 from block import *
+from drop_light import *
 
 class Tetromino():
     def __init__(self, tetris):
@@ -9,9 +10,21 @@ class Tetromino():
         Ouput: Không.
         """
         self.tetris = tetris
+        self.init_tetromino_type()
         self.create_tetromino(self.tetris.is_first_tetromino)
         self.landing = False
         
+
+    def init_tetromino_type(self):
+        if self.tetris.app.game_mode == 'modern':
+            types = ['normal', 'bomb']
+            random_type = random.randint(0, 10)
+            if random_type < 8:
+                self.tetromino_type = types[0]
+            elif random_type >= 8:
+                self.tetromino_type = types[1]
+        elif self.tetris.app.game_mode == 'classic':
+            self.tetromino_type = 'normal'
 
     def create_tetromino(self, is_first_tetromino):
         """
@@ -23,7 +36,13 @@ class Tetromino():
             self.core_pos = vector(INITIAL_TETROMINO_POS) # Tọa độ gốc
         else:
             self.core_pos = vector(NEXT_TETROMINO_POS)
+        if self.tetromino_type == 'normal':
+            self.create_normal_tetromino()
+        elif self.tetromino_type == 'bomb':
+            self.create_bomb_tetromino()
 
+
+    def create_normal_tetromino(self):
         self.tetromino_name = random.choice(list(self.tetris.app.tetrominos.keys()))
         self.tetromino_rotation = random.randint(0, len(self.tetris.app.tetrominos[self.tetromino_name]) - 1)
         tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]
@@ -33,6 +52,20 @@ class Tetromino():
                 if tetromino_shape[y][x] == 'o':
                     blocks_pos.append(vector(x, y) + self.core_pos)
         image_path = os.path.join(SOURCES_FILE_DIRECTORY, f'assets/images/blocks/block_{self.tetris.app.tetrominos_image_number[self.tetromino_name]}.png')
+        self.image = pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE))
+        self.blocks = [Block(self, pos) for pos in blocks_pos]
+
+
+    def create_bomb_tetromino(self):
+        self.tetromino_name = 'DOT'
+        self.tetromino_rotation = 0
+        tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]
+        blocks_pos = []
+        for x in range(SHAPE_TEMPLATE_COLS):
+            for y in range(SHAPE_TEMPLATE_ROWS):
+                if tetromino_shape[y][x] == 'o':
+                    blocks_pos.append(vector(x, y) + self.core_pos)
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'assets/images/blocks/block_dirt.png')
         self.image = pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE))
         self.blocks = [Block(self, pos) for pos in blocks_pos]
 
@@ -103,6 +136,8 @@ class Tetromino():
             block.block_pos += (0, i - 1)
             block.set_rect_topleft() #Sau khi đáp đất thì cập nhật ngay tọa độ của rect để group vẽ (do nếu rơi vào trường hợp game over thì vẫn có thể vẽ khối này)
             self.tetris.sprites_group.draw(self.tetris.tetris_surface) #Vẽ
+        self.core_pos += (0, i - 1)
+        Drop_Light(self.tetris, (self.core_pos + (2, 2)) * BLOCK_SIZE)
         self.tetris.counter = 0
         self.landing = True
 

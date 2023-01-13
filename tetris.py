@@ -1,6 +1,7 @@
 from game_settings import *
 from tetromino import *
 from sparkle import *
+from drop_light import *
 
 class Tetris():
     def __init__(self, app):
@@ -33,6 +34,7 @@ class Tetris():
         self.tetris_surface_move_direction = 'down' # Biến dùng để điều khiển hướng của hiệu ứng rung động.
         self.counter = -1 # Biến đếm để chạy hiệu ứng rung động khi dùng chức năng rơi khối tetromino ngay lập tức.
         self.sparkle_group = pg.sprite.Group()
+        self.drop_light_group = pg.sprite.Group()
         
     def create_last_action_time(self):
         """
@@ -246,14 +248,44 @@ class Tetris():
                 self.__init__(self.app) # game over handle
                 self.app.game_over_menu()
             else:
-                self.put_tetromino_blocks_into_matrix()
-                removed_lines_num = self.removed_completed_lines()
-                self.calculate_score(removed_lines_num)
-                self.calculate_level()
-                self.calculate_fall_frequency()
-                self.tetromino = self.tetromino_queue.get()
-                self.tetromino_queue.put(Tetromino(self))
+                if self.tetromino.tetromino_type == 'normal':
+                    self.normal_tetromino_handle()
+                elif self.tetromino.tetromino_type == 'bomb':
+                    self.bomb_tetromino_handle()
 
+
+    def normal_tetromino_handle(self):
+        self.put_tetromino_blocks_into_matrix()
+        removed_lines_num = self.removed_completed_lines()
+        self.calculate_score(removed_lines_num)
+        self.calculate_level()
+        self.calculate_fall_frequency()
+        self.tetromino = self.tetromino_queue.get()
+        self.tetromino_queue.put(Tetromino(self))
+
+
+    def bomb_tetromino_handle(self):
+        removed_blocks_by_bomb_num = self.removed_blocks_by_bomb_num()
+        self.calculate_score_based_on_removed_blocks(removed_blocks_by_bomb_num)
+        self.calculate_level()
+        self.calculate_fall_frequency()
+        self.tetromino = self.tetromino_queue.get()
+        self.tetromino_queue.put(Tetromino(self))
+        
+
+    def removed_blocks_by_bomb_num(self):
+        removed_block_num = 0
+        current_bomb_pos_x = int(self.tetromino.blocks[0].block_pos.x)
+        current_bomb_pos_y = int(self.tetromino.blocks[0].block_pos.y)
+        coors_x = [-1, 0, 1, 1, 1, 0, -1, -1]
+        coors_y = [-1, -1, -1, 0, 1, 1, 1, 0]
+        for i in range(8):
+            if self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y]:
+                self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y].alive = False
+                self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y] = 0
+                removed_block_num += 1
+        self.tetromino.blocks[0].alive = False
+        return removed_block_num
 
     def run_game_over_effect(self):
         """
@@ -328,6 +360,18 @@ class Tetris():
             num += i + 1
         self.score += 100 * num
             
+
+    def calculate_score_based_on_removed_blocks(self, removed_blocks_num):
+        """
+        Input: Tổng số block đã xóa.
+        Process: Thực hiện tính điểm và gán lại cho biến score.
+        Ouput: Không.
+        """
+        num = 0
+        for i in range(removed_blocks_num):
+            num += i + 1
+        self.score += 10 * num
+
 
     def calculate_level(self):
         """
@@ -573,6 +617,7 @@ class Tetris():
         self.landed_tetromino_handle()
         self.tetris_surface_vibration_handling()
         self.sparkle_group.update()
+        self.drop_light_group.update()
         self.sprites_group.update()
 
 
@@ -586,12 +631,13 @@ class Tetris():
         if self.app.show_grid == True: # Nếu người dùng vào menu option chọn show grid thì mới show ra
             self.draw_grid()
         self.sparkle_group.draw(self.tetris_surface)
-        self.draw_tetromino_current_hold()
-        self.draw_tetromino_queue()
-        self.draw_logo()
+        self.drop_light_group.draw(self.tetris_surface)
         if self.app.show_tetromino_shadow == True:
             self.tetromino.draw_tetromino_drop_shadow() # Tương tự show grid
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
+        self.draw_tetromino_current_hold()
+        self.draw_tetromino_queue()
+        self.draw_logo()
         self.draw_score()
         self.draw_next_level()
         self.draw_level()

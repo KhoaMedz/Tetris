@@ -12,13 +12,14 @@ class App():
         pg.init()
         pg.mixer.set_num_channels(100)
         self.display_screen = pg.display.set_mode(WINDOW_RES)
+        self.create_option_attributes()
         self.set_tetrominos_template()
         self.tetris = Tetris(self)
         pg.display.set_caption('Tetris')
         self.background_image = self.load_image()
         self.fps_clock = pg.time.Clock()
         self.set_timer()
-        self.create_option_attributes()
+        
 
 
     def set_tetrominos_template(self):
