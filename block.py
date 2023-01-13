@@ -15,6 +15,7 @@ class Block(pg.sprite.Sprite):
         self.rect.topleft = self.block_pos * BLOCK_SIZE
         self.alive = True
         self.create_block_sfx()
+        self.special_effect_counter = 1
 
 
     def create_block_sfx(self):
@@ -78,6 +79,10 @@ class Block(pg.sprite.Sprite):
         self.rect.topleft = self.block_pos * BLOCK_SIZE
 
 
+    def set_rect_center(self):
+        self.rect.center = (self.block_pos * BLOCK_SIZE) + (BLOCK_SIZE // 2, BLOCK_SIZE // 2)
+
+
     def set_block_pos(self, block_pos):
         """
         Input: Tọa độ block.
@@ -106,7 +111,24 @@ class Block(pg.sprite.Sprite):
         Process: Cập nhật lại tọa độ của block trong group và kiểm tra xem block còn hoạt động không.
         Ouput: Không.
         """
+        if self.tetromino.tetromino_type == 'bomb':
+            self.update_bomb_block()
+        elif self.tetromino.tetromino_type == 'normal':
+            self.update_normal_block()
+
+
+    def update_normal_block(self):
         self.set_rect_topleft()
+        self.is_alive()
+
+
+    def update_bomb_block(self):
+        self.image = self.tetromino.tetris.load_image(f'assets/images/effect/bomb_effect/{self.special_effect_counter}.png', 80, 80)
+        self.special_effect_counter += 1
+        if self.special_effect_counter >= 61:
+            self.special_effect_counter = 1
+        self.rect = self.image.get_rect()
+        self.set_rect_center()
         self.is_alive()
 
 
@@ -133,7 +155,7 @@ class Block(pg.sprite.Sprite):
 
 
     def draw_block_image_for_current_hold(self, surface, coordinate_X, coordinate_Y, image_size_width, image_size_height):
-        block_image = pg.transform.scale(self.tetromino.image, (image_size_width, image_size_height))
+        block_image = pg.transform.scale(self.image, (image_size_width, image_size_height))
         surface.blit(block_image, (coordinate_X, coordinate_Y))
 
     

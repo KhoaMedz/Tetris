@@ -65,7 +65,7 @@ class Tetromino():
             for y in range(SHAPE_TEMPLATE_ROWS):
                 if tetromino_shape[y][x] == 'o':
                     blocks_pos.append(vector(x, y) + self.core_pos)
-        image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'assets/images/blocks/block_dirt.png')
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'assets/images/effect/bomb_effect/1.png')
         self.image = pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE))
         self.blocks = [Block(self, pos) for pos in blocks_pos]
 

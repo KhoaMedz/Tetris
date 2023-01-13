@@ -2,6 +2,7 @@ from game_settings import *
 from tetromino import *
 from sparkle import *
 from drop_light import *
+from bomb_explosion import *
 
 class Tetris():
     def __init__(self, app):
@@ -35,7 +36,9 @@ class Tetris():
         self.counter = -1 # Biến đếm để chạy hiệu ứng rung động khi dùng chức năng rơi khối tetromino ngay lập tức.
         self.sparkle_group = pg.sprite.Group()
         self.drop_light_group = pg.sprite.Group()
+        self.bomb_group = pg.sprite.Group()
         
+
     def create_last_action_time(self):
         """
         Input: Không.
@@ -265,6 +268,8 @@ class Tetris():
 
 
     def bomb_tetromino_handle(self):
+        Bomb_Explosion(self, (self.tetromino.core_pos + (2, 2)) * BLOCK_SIZE)
+        self.play_sound('assets/music/sound_effects/bomb_explosion_sound.wav')
         removed_blocks_by_bomb_num = self.removed_blocks_by_bomb_num()
         self.calculate_score_based_on_removed_blocks(removed_blocks_by_bomb_num)
         self.calculate_level()
@@ -280,12 +285,13 @@ class Tetris():
         coors_x = [-1, 0, 1, 1, 1, 0, -1, -1]
         coors_y = [-1, -1, -1, 0, 1, 1, 1, 0]
         for i in range(8):
-            if self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y]:
+            if not self.is_out_of_index(coors_x[i] + current_bomb_pos_x, coors_y[i] + current_bomb_pos_y) and self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y]:
                 self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y].alive = False
                 self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y] = 0
                 removed_block_num += 1
         self.tetromino.blocks[0].alive = False
         return removed_block_num
+
 
     def run_game_over_effect(self):
         """
@@ -561,7 +567,7 @@ class Tetris():
             pg.mixer.music.set_volume(volume)
 
 
-    def play_sound(self, sound_path, custom_volume = False, volume = 0):
+    def play_sound(self, sound_path, custom_volume = False, volume = 0, loops = 0):
         """
         Input: Đường dẫn file sound.
         Process: Play sound effect.
@@ -569,7 +575,7 @@ class Tetris():
         """
         sound_path = os.path.join(SOURCES_FILE_DIRECTORY, sound_path)
         sound_to_play = pg.mixer.Sound(sound_path)
-        sound_to_play.play()
+        sound_to_play.play(loops=loops)
         if custom_volume == True:
             sound_to_play.set_volume(volume)
 
@@ -619,6 +625,7 @@ class Tetris():
         self.sparkle_group.update()
         self.drop_light_group.update()
         self.sprites_group.update()
+        self.bomb_group.update()
 
 
     def draw(self):
@@ -635,6 +642,7 @@ class Tetris():
         if self.app.show_tetromino_shadow == True:
             self.tetromino.draw_tetromino_drop_shadow() # Tương tự show grid
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
+        self.bomb_group.draw(self.tetris_surface)
         self.draw_tetromino_current_hold()
         self.draw_tetromino_queue()
         self.draw_logo()
