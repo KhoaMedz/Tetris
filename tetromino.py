@@ -17,16 +17,18 @@ class Tetromino():
 
     def init_tetromino_type(self):
         if self.tetris.app.game_mode == 'modern':
-            types = ['normal', 'bomb', 'big_bomb']
+            types = ['normal', 'bomb', 'big_bomb', 'dirt']
             random_tetromino_type = random.randint(1, 100)
-            if random_tetromino_type <= 94:
+            if random_tetromino_type <= 50:
                 self.tetromino_type = types[0]
-            elif random_tetromino_type > 94:
+            elif random_tetromino_type > 50:
                 random_special_tetromino_type = random.randint(1, 100)
-                if random_special_tetromino_type <= 50:
-                    self.tetromino_type = types[1]
-                elif random_special_tetromino_type > 50:
-                    self.tetromino_type = types[2]
+                if random_special_tetromino_type <= 30:
+                    self.tetromino_type = types[3]
+                elif 30 < random_special_tetromino_type <= 50:
+                    self.tetromino_type = types[3]
+                elif 50 < random_special_tetromino_type <= 100:
+                    self.tetromino_type = types[3]
         elif self.tetris.app.game_mode == 'classic':
             self.tetromino_type = 'normal'
 
@@ -47,6 +49,8 @@ class Tetromino():
             self.create_bomb_tetromino()
         elif self.tetromino_type == 'big_bomb':
             self.create_big_bomb_tetromino()
+        elif self.tetromino_type == 'dirt':
+            self.create_dirt_tetromino()
 
 
     def create_normal_tetromino(self):
@@ -78,6 +82,20 @@ class Tetromino():
 
 
     def create_big_bomb_tetromino(self):
+        self.tetromino_name = 'DOT'
+        self.tetromino_rotation = 0
+        tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]
+        blocks_pos = []
+        for x in range(SHAPE_TEMPLATE_COLS):
+            for y in range(SHAPE_TEMPLATE_ROWS):
+                if tetromino_shape[y][x] == 'o':
+                    blocks_pos.append(vector(x, y) + self.core_pos)
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'assets/images/effect/big_bomb_effect/frame (1).png')
+        self.image = pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE))
+        self.blocks = [Block(self, pos) for pos in blocks_pos]
+
+
+    def create_dirt_tetromino(self):
         self.tetromino_name = 'DOT'
         self.tetromino_rotation = 0
         tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]

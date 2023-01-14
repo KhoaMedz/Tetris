@@ -117,6 +117,8 @@ class Block(pg.sprite.Sprite):
             self.update_normal_block()
         elif self.tetromino.tetromino_type == 'big_bomb':
             self.update_big_bomb_block()
+        elif self.tetromino.tetromino_type == 'dirt':
+            self.update_dirt_block()
 
 
     def update_normal_block(self):
@@ -143,6 +145,10 @@ class Block(pg.sprite.Sprite):
         self.set_rect_center()
         self.is_alive()
 
+
+    def update_dirt_block(self):
+            self.set_rect_topleft()
+            self.is_alive()
 
     # Chỉ dùng để vẽ hàng chờ tetromino
     def draw_block(self, surface, coordinate_X, coordinate_Y, block_size):

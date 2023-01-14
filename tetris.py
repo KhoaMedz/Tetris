@@ -4,6 +4,7 @@ from sparkle import *
 from drop_light import *
 from bomb_explosion import *
 from big_bomb_explosion import *
+from dust import *
 
 class Tetris():
     def __init__(self, app):
@@ -39,6 +40,7 @@ class Tetris():
         self.drop_light_group = pg.sprite.Group()
         self.bomb_group = pg.sprite.Group()
         self.big_bomb_group = pg.sprite.Group()
+        self.dirt_group = pg.sprite.Group()
         
 
     def create_last_action_time(self):
@@ -259,6 +261,8 @@ class Tetris():
                     self.bomb_tetromino_handle()
                 elif self.tetromino.tetromino_type == 'big_bomb':
                     self.big_bomb_tetromino_handle()
+                elif self.tetromino.tetromino_type == 'dirt':
+                    self.dirt_tetromino_handle()
 
 
     def normal_tetromino_handle(self):
@@ -281,6 +285,21 @@ class Tetris():
         self.tetromino = self.tetromino_queue.get()
         self.tetromino_queue.put(Tetromino(self))
         
+
+    def removed_blocks_by_bomb_num(self):
+        removed_block_num = 0
+        current_bomb_pos_x = int(self.tetromino.blocks[0].block_pos.x)
+        current_bomb_pos_y = int(self.tetromino.blocks[0].block_pos.y)
+        coors_x = [-1, 0, 1, 1, 1, 0, -1, -1]
+        coors_y = [-1, -1, -1, 0, 1, 1, 1, 0]
+        for i in range(8):
+            if not self.is_out_of_index(coors_x[i] + current_bomb_pos_x, coors_y[i] + current_bomb_pos_y) and self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y]:
+                self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y].alive = False
+                self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y] = 0
+                removed_block_num += 1
+        self.tetromino.blocks[0].alive = False
+        return removed_block_num
+
 
     def big_bomb_tetromino_handle(self):
         Big_Bomb_Explosion(self, (self.tetromino.core_pos + (2, 2)) * BLOCK_SIZE)
@@ -308,20 +327,30 @@ class Tetris():
         return removed_block_num
 
 
-    def removed_blocks_by_bomb_num(self):
-        removed_block_num = 0
-        current_bomb_pos_x = int(self.tetromino.blocks[0].block_pos.x)
-        current_bomb_pos_y = int(self.tetromino.blocks[0].block_pos.y)
-        coors_x = [-1, 0, 1, 1, 1, 0, -1, -1]
-        coors_y = [-1, -1, -1, 0, 1, 1, 1, 0]
-        for i in range(8):
-            if not self.is_out_of_index(coors_x[i] + current_bomb_pos_x, coors_y[i] + current_bomb_pos_y) and self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y]:
-                self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y].alive = False
-                self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y] = 0
-                removed_block_num += 1
-        self.tetromino.blocks[0].alive = False
-        return removed_block_num
+    def dirt_tetromino_handle(self):
+        self.put_dirt_tetromino_into_matrix()
+        removed_lines_num = self.removed_completed_lines()
+        self.calculate_score(removed_lines_num)
+        self.calculate_level()
+        self.calculate_fall_frequency()
+        self.tetromino = self.tetromino_queue.get()
+        self.tetromino_queue.put(Tetromino(self))
 
+
+    def put_dirt_tetromino_into_matrix(self):
+        coor_x, coor_y = int(self.tetromino.blocks[0].block_pos.x), int(self.tetromino.blocks[0].block_pos.y)
+        self.tetris_matrix[coor_x][coor_y] = self.tetromino.blocks[0]
+        Dust(self, vector(coor_x, coor_y) * BLOCK_SIZE)
+        count = 0
+        for y in range(TETRIS_ROWS - 1, coor_y, -1):
+            for x in range(TETRIS_COLS):
+                if not self.tetris_matrix[x][y]:
+                    self.tetris_matrix[x][y] = Block(self.tetromino, vector(x, y))
+                    Dust(self, vector(x, y) * BLOCK_SIZE)
+                    count += 1
+                    if count == 3:
+                        return
+    
 
     def run_game_over_effect(self):
         """
@@ -381,7 +410,10 @@ class Tetris():
             self.play_sound('assets/music/sound_effects/four_line_clear_sound.mp3')
             Sparkle(self)
         else:
-            self.play_sound('assets/music/sound_effects/drop_sound.mp3')
+            if self.tetromino.tetromino_type == 'normal':
+                self.play_sound('assets/music/sound_effects/drop_sound.mp3')
+            elif self.tetromino.tetromino_type == 'dirt':
+                self.play_sound('assets/music/sound_effects/dirt_drop_sound.mp3')
         return removed_lines_num
 
 
@@ -657,6 +689,7 @@ class Tetris():
         self.sprites_group.update()
         self.bomb_group.update()
         self.big_bomb_group.update()
+        self.dirt_group.update()
 
 
     def draw(self):
@@ -675,6 +708,7 @@ class Tetris():
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
         self.bomb_group.draw(self.tetris_surface)
         self.big_bomb_group.draw(self.tetris_surface)
+        self.dirt_group.draw(self.tetris_surface)
         self.draw_tetromino_current_hold()
         self.draw_tetromino_queue()
         self.draw_logo()

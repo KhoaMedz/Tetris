@@ -17,5 +17,5 @@ from game_settings import *
 #             print('a is pressed')
 
 #     pg.display.flip()
-random_type = random.randint(0, 10)
-print(random_type)
+for i in range(0, 0, 1):
+    print(i)
