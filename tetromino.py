@@ -19,15 +19,15 @@ class Tetromino():
         if self.tetris.app.game_mode == 'modern':
             types = ['normal', 'bomb', 'big_bomb', 'dirt']
             random_tetromino_type = random.randint(1, 100)
-            if random_tetromino_type <= 50:
+            if random_tetromino_type <= 94:
                 self.tetromino_type = types[0]
-            elif random_tetromino_type > 50:
+            elif random_tetromino_type > 94:
                 random_special_tetromino_type = random.randint(1, 100)
-                if random_special_tetromino_type <= 30:
-                    self.tetromino_type = types[3]
-                elif 30 < random_special_tetromino_type <= 50:
-                    self.tetromino_type = types[3]
-                elif 50 < random_special_tetromino_type <= 100:
+                if random_special_tetromino_type <= 34:
+                    self.tetromino_type = types[1]
+                elif 34 < random_special_tetromino_type <= 67:
+                    self.tetromino_type = types[2]
+                elif 67 < random_special_tetromino_type <= 100:
                     self.tetromino_type = types[3]
         elif self.tetris.app.game_mode == 'classic':
             self.tetromino_type = 'normal'
