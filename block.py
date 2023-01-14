@@ -115,6 +115,8 @@ class Block(pg.sprite.Sprite):
             self.update_bomb_block()
         elif self.tetromino.tetromino_type == 'normal':
             self.update_normal_block()
+        elif self.tetromino.tetromino_type == 'big_bomb':
+            self.update_big_bomb_block()
 
 
     def update_normal_block(self):
@@ -126,6 +128,16 @@ class Block(pg.sprite.Sprite):
         self.image = self.tetromino.tetris.load_image(f'assets/images/effect/bomb_effect/{self.special_effect_counter}.png', 80, 80)
         self.special_effect_counter += 1
         if self.special_effect_counter >= 61:
+            self.special_effect_counter = 1
+        self.rect = self.image.get_rect()
+        self.set_rect_center()
+        self.is_alive()
+
+
+    def update_big_bomb_block(self):
+        self.image = self.tetromino.tetris.load_image(f'assets/images/effect/big_bomb_effect/frame ({self.special_effect_counter}).png', 125, 125)
+        self.special_effect_counter += 1
+        if self.special_effect_counter >= 62:
             self.special_effect_counter = 1
         self.rect = self.image.get_rect()
         self.set_rect_center()

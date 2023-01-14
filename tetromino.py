@@ -17,12 +17,16 @@ class Tetromino():
 
     def init_tetromino_type(self):
         if self.tetris.app.game_mode == 'modern':
-            types = ['normal', 'bomb']
-            random_type = random.randint(1, 100)
-            if random_type <= 94 :
+            types = ['normal', 'bomb', 'big_bomb']
+            random_tetromino_type = random.randint(1, 100)
+            if random_tetromino_type <= 94:
                 self.tetromino_type = types[0]
-            elif random_type > 94:
-                self.tetromino_type = types[1]
+            elif random_tetromino_type > 94:
+                random_special_tetromino_type = random.randint(1, 100)
+                if random_special_tetromino_type <= 50:
+                    self.tetromino_type = types[1]
+                elif random_special_tetromino_type > 50:
+                    self.tetromino_type = types[2]
         elif self.tetris.app.game_mode == 'classic':
             self.tetromino_type = 'normal'
 
@@ -41,6 +45,8 @@ class Tetromino():
             self.create_normal_tetromino()
         elif self.tetromino_type == 'bomb':
             self.create_bomb_tetromino()
+        elif self.tetromino_type == 'big_bomb':
+            self.create_big_bomb_tetromino()
 
 
     def create_normal_tetromino(self):
@@ -67,6 +73,20 @@ class Tetromino():
                 if tetromino_shape[y][x] == 'o':
                     blocks_pos.append(vector(x, y) + self.core_pos)
         image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'assets/images/effect/bomb_effect/1.png')
+        self.image = pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE))
+        self.blocks = [Block(self, pos) for pos in blocks_pos]
+
+
+    def create_big_bomb_tetromino(self):
+        self.tetromino_name = 'DOT'
+        self.tetromino_rotation = 0
+        tetromino_shape = self.tetris.app.tetrominos[self.tetromino_name][self.tetromino_rotation]
+        blocks_pos = []
+        for x in range(SHAPE_TEMPLATE_COLS):
+            for y in range(SHAPE_TEMPLATE_ROWS):
+                if tetromino_shape[y][x] == 'o':
+                    blocks_pos.append(vector(x, y) + self.core_pos)
+        image_path = os.path.join(SOURCES_FILE_DIRECTORY, 'assets/images/blocks/block_dirt.png')
         self.image = pg.transform.scale(pg.image.load(image_path), (BLOCK_SIZE, BLOCK_SIZE))
         self.blocks = [Block(self, pos) for pos in blocks_pos]
 

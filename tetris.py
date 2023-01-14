@@ -3,6 +3,7 @@ from tetromino import *
 from sparkle import *
 from drop_light import *
 from bomb_explosion import *
+from big_bomb_explosion import *
 
 class Tetris():
     def __init__(self, app):
@@ -37,6 +38,7 @@ class Tetris():
         self.sparkle_group = pg.sprite.Group()
         self.drop_light_group = pg.sprite.Group()
         self.bomb_group = pg.sprite.Group()
+        self.big_bomb_group = pg.sprite.Group()
         
 
     def create_last_action_time(self):
@@ -255,6 +257,8 @@ class Tetris():
                     self.normal_tetromino_handle()
                 elif self.tetromino.tetromino_type == 'bomb':
                     self.bomb_tetromino_handle()
+                elif self.tetromino.tetromino_type == 'big_bomb':
+                    self.big_bomb_tetromino_handle()
 
 
     def normal_tetromino_handle(self):
@@ -277,6 +281,32 @@ class Tetris():
         self.tetromino = self.tetromino_queue.get()
         self.tetromino_queue.put(Tetromino(self))
         
+
+    def big_bomb_tetromino_handle(self):
+        Big_Bomb_Explosion(self, (self.tetromino.core_pos + (2, 2)) * BLOCK_SIZE)
+        self.play_sound('assets/music/sound_effects/big_bomb_explosion_sound.mp3')
+        removed_blocks_by_big_bomb_num = self.removed_blocks_by_big_bomb_num()
+        self.calculate_score_based_on_removed_blocks(removed_blocks_by_big_bomb_num)
+        self.calculate_level()
+        self.calculate_fall_frequency()
+        self.tetromino = self.tetromino_queue.get()
+        self.tetromino_queue.put(Tetromino(self))
+
+
+    def removed_blocks_by_big_bomb_num(self):
+        removed_block_num = 0
+        current_bomb_pos_x = int(self.tetromino.blocks[0].block_pos.x)
+        current_bomb_pos_y = int(self.tetromino.blocks[0].block_pos.y)
+        coors_x = [-1, 0, 1, 1, 1, 0, -1, -1, -2, -1, 0, 1, 2, 2, 2, 2, 2, 1, 0, -1, -2, -2, -2, -2, -2]
+        coors_y = [-1, -1, -1, 0, 1, 1, 1, 0, -2, -2, -2, -2, -2, -1, 0, 1, 2, 2, 2, 2, 2, 1, 0, -1, -2]
+        for i in range(24):
+            if not self.is_out_of_index(coors_x[i] + current_bomb_pos_x, coors_y[i] + current_bomb_pos_y) and self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y]:
+                self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y].alive = False
+                self.tetris_matrix[coors_x[i] + current_bomb_pos_x][coors_y[i] + current_bomb_pos_y] = 0
+                removed_block_num += 1
+        self.tetromino.blocks[0].alive = False
+        return removed_block_num
+
 
     def removed_blocks_by_bomb_num(self):
         removed_block_num = 0
@@ -626,6 +656,7 @@ class Tetris():
         self.drop_light_group.update()
         self.sprites_group.update()
         self.bomb_group.update()
+        self.big_bomb_group.update()
 
 
     def draw(self):
@@ -643,6 +674,7 @@ class Tetris():
             self.tetromino.draw_tetromino_drop_shadow() # Tương tự show grid
         self.sprites_group.draw(self.tetris_surface) # Vẽ ra các sprite có trong group (các khối gạch)
         self.bomb_group.draw(self.tetris_surface)
+        self.big_bomb_group.draw(self.tetris_surface)
         self.draw_tetromino_current_hold()
         self.draw_tetromino_queue()
         self.draw_logo()
